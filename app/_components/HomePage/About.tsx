@@ -17,11 +17,9 @@ interface ICard {
 }
 
 export default function About() {
-  // const animationDuration = testimony.length * 5;
-
   return (
-   
-      <article className="flex flex-col md:gap-4 pt-11 lg:pt-14 px-5 lg:pb-8">
+    <>
+      <article className="flex flex-col md:gap-4 pt-11 lg:pt-14 px-5 lg:pb-8 overflow-hidden">
         <div className="flex mx-auto gap-5 items-center mb-1 leading-6">
           <FaBullseye className="text-3xl text-rose-900" />
           <h3 className="text-[1.1rem] md:text-xl lg:text-2xl font-bold text-rose-900 capitalize">
@@ -36,18 +34,24 @@ export default function About() {
           clients&lsquo; words also!
         </p>
 
-        {/* Sliding Cards Container - One card at a time */}
-        <div className="slide-container">
-          <div className="slide-track">
-            {/* First copy of cards */}
+        {/* Sliding Cards Container */}
+        <div className="slider-wrapper">
+          <div className="slider-track">
+            {/* First set */}
             {testimony.map((card: ICard, i: number) => (
-              <div key={`first-${i}`} className="slide-card">
+              <div key={`first-${i}`} className="slide-item">
                 <Card card={card} />
               </div>
             ))}
-            {/* Second copy of cards for seamless loop */}
+            {/* Duplicate set for seamless loop */}
             {testimony.map((card: ICard, i: number) => (
-              <div key={`second-${i}`} className="slide-card">
+              <div key={`second-${i}`} className="slide-item">
+                <Card card={card} />
+              </div>
+            ))}
+            {/* Third set to ensure smooth transition */}
+            {testimony.map((card: ICard, i: number) => (
+              <div key={`third-${i}`} className="slide-item">
                 <Card card={card} />
               </div>
             ))}
@@ -55,51 +59,47 @@ export default function About() {
         </div>
       </article>
 
-      // <style jsx>{`
-      //   .slide-container {
-      //     overflow: hidden;
-      //     position: relative;
-      //     width: 100%;
-      //     margin-bottom: 2rem;
-      //     display: flex;
-      //     justify-content: center;
-      //   }
+      <style jsx global>{`
+        .slider-wrapper {
+          overflow: hidden;
+          position: relative;
+          width: 100%;
+          margin: 2rem 0 .5rem;
+        }
 
-      //   .slide-track {
-      //     display: flex;
-      //     width: fit-content;
-      //     animation: slideCards ${animationDuration}s linear infinite;
-      //   }
+        .slider-track {
+          display: flex;
+          gap: 2.5rem;
+          width: max-content;
+          animation: scroll 28s linear infinite;
+          will-change: transform;
+        }
 
-      //   .slide-card {
-      //     flex-shrink: 0;
-      //     width: 100vw;
-      //     display: flex;
-      //     justify-content: center;
-      //     align-items: center;
-      //   }
+        .slide-item {
+          flex: 0 0 auto;
+          display: flex;
+        }
 
-      //   @keyframes slideCards {
-      //     0% {
-      //       transform: translateX(0);
-      //     }
-      //     100% {
-      //       transform: translateX(-50%);
-      //     }
-      //   }
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(calc(-100% / 3));
+          }
+        }
 
-      //   /* Pause animation on hover for better UX */
-      //   .slide-container:hover .slide-track {
-      //     animation-play-state: paused;
-      //   }
+        .slider-wrapper:hover .slider-track {
+          animation-play-state: paused;
+        }
 
-      //   /* Ensure cards display properly on mobile and desktop */
-      //   @media (min-width: 640px) {
-      //     .slide-card {
-      //       width: 100vw;
-      //     }
-      //   }
-      // `}</style>
-
+        @media (max-width: 640px) {
+          .slider-track {
+            gap: 1.5rem;
+            animation-duration: 45s;
+          }
+        }
+      `}</style>
+    </>
   );
 }

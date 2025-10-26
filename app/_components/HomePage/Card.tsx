@@ -75,7 +75,7 @@ export default function Card({ card }: CardProps) {
         />
       </div>
       <div className="hidden lg:flex lg:flex-col h-fit w-[21rem]  gap-5 px-6 pt-7 relative">
-        <div className="flex flex-col gap-0 items-center ">
+        <div className="flex flex-col gap-0 items-center">
           <h3 className="text-base">{card.company}</h3>
           <h2 className="capitalize font-bold">{card.field}</h2>
         </div>
