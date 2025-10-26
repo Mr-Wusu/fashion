@@ -4,13 +4,14 @@ import { usePathname } from "next/navigation";
 
 import NavLinks from "./NavLinks";
 import { RootState } from "@/state/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setHomePage, setScrolled } from "@/state/navbar/navbarSlice";
 import { logout } from "@/state/user/userSlice";
 import Link from "next/link";
 import { Button } from "./Button";
 
 export default function Navbar() {
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const pathname = usePathname();
   const dispatch = useDispatch();
   const navbar = useSelector((state: RootState) => state.navbar);
@@ -32,21 +33,25 @@ export default function Navbar() {
   }, [pathname, dispatch]);
 
   function handleSignout() {
-    dispatch(logout());
+    setIsSigningOut(true);
+    setTimeout(() => {
+      dispatch(logout());
+      setIsSigningOut(false);
+    }, 2000); 
   }
 
   
 
   return (
     <nav
-      className={`h-16 px-4 fixed w-full z-50 shadow-md flex items-center justify-between bg-transparent ${
+      className={`h-16 px-4 fixed w-full z-50 shadow-md flex items-center justify-between  ${
         navbar.isHomePage && !navbar.isScrolled
-          ? "text-lightRose1 "
+          ? "text-lightRose1 bg-transparent"
           : navbar.isHomePage && navbar.isScrolled
           ? "bg-lightRose1 text-darkRose2"
           : !navbar.isHomePage
-          ? "bg-lightRose1 text-darkRose2 font-semibold"
-          : "text-lightRose1"
+          ? "bg-transparent text-darkRose2"
+          : "text-darkRose2 bg-transparent"
       }`}
     >
       <h2 className={`h2-custom-font md:text-xl lg:text-2xl `}>
@@ -57,9 +62,15 @@ export default function Navbar() {
         <div className="flex gap-2.5 items-center">
           <p className="tracking-wide">
             Welcome {user.firstName}
-            <span className="ml-0.5">!</span>
+            <span className="ml-0.5">{user.isAdmin ? " (Admin)" : "!"}</span>
           </p>
-          <Button className="px-2.5" onClick={handleSignout}>Sign out</Button>
+          <Button
+            className="px-2.5"
+            onClick={handleSignout}
+            disabled={isSigningOut}
+          >
+            {isSigningOut ? "Signing out..." : "Sign out"}
+          </Button>
         </div>
       ) : (
         <Link
