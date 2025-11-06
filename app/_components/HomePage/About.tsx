@@ -23,7 +23,7 @@ export default function About() {
         <div className="flex mx-auto gap-5 items-center mb-1 leading-6">
           <FaBullseye className="text-3xl text-rose-900" />
           <h3 className="text-[1.1rem] md:text-xl lg:text-2xl font-bold text-rose-900 capitalize">
-            Our promise to you at <span className="">blews&apos; stitches</span>
+            Our promise to you at <span className="logo">blews&apos; stitches</span>
           </h3>
         </div>
         <p className="leading-7 text-justify md:text-left text-[1.0975rem] md:text-lg lg:text-xl text-darkRose2 lg:px-20 mb-6">
@@ -64,7 +64,7 @@ export default function About() {
           overflow: hidden;
           position: relative;
           width: 100%;
-          margin: 2rem 0 .5rem;
+          margin: 2rem 0 0.5rem;
         }
 
         .slider-track {
@@ -78,6 +78,23 @@ export default function About() {
         .slide-item {
           flex: 0 0 auto;
           display: flex;
+        }
+
+        .logo {
+          font-family: MyCustomFont, sans-serif;
+          padding: 0 0.5rem;
+          margin-left: -0.42rem;
+          font-weight: 500;
+          font-size: 1.2rem;
+
+          @media screen and (min-width: 768px) {
+            background-color: #be123c;
+            color: white;
+            margin-left: 0rem;
+            padding: 0.4rem 1rem;
+            clip-path: polygon(10% 0%, 100% 0, 90% 100%, 0% 100%);
+            border-radius: 0.6rem;
+          }
         }
 
         @keyframes scroll {

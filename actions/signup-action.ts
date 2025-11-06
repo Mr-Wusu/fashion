@@ -61,8 +61,6 @@ export default async function signup(
     password,
   });
 
-  console.log("Create user result:", result);
-
   if (result.success === true) {
     redirect("/auth/sign-in");
   } else {

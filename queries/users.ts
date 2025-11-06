@@ -67,12 +67,13 @@ export async function login([email, password]: [string, string]) {
         error: "Invalid email or password",
       };
     }
-    console.log(user);
+    
     return {
       success: true,
       message: "Login successful",
-      user,
+      user
     };
+
   } catch (e) {
     console.error("Login error:", e);
     return {
