@@ -1,4 +1,5 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
 import menuReducer from "@/state/menu/menuSlice";
 import modalReducer from "@/state/modal/modalSlice";
 import navbarReducer from "@/state/navbar/navbarSlice";
