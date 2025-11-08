@@ -1,7 +1,7 @@
 "use client";
 import { useSelector, useDispatch } from "react-redux";
 import { usePathname } from "next/navigation";
-
+import { useMounted } from "@/hooks/useMounted";
 import NavLinks from "./NavLinks";
 import { RootState } from "@/state/store";
 import { useEffect, useState } from "react";
@@ -16,6 +16,7 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const navbar = useSelector((state: RootState) => state.navbar);
   const user = useSelector((state: RootState) => state.user);
+  const isMounted = useMounted();
 
   useEffect(() => {
     dispatch(setHomePage(pathname === "/"));
@@ -37,10 +38,8 @@ export default function Navbar() {
     setTimeout(() => {
       dispatch(logout());
       setIsSigningOut(false);
-    }, 2000); 
+    }, 2000);
   }
-
-  
 
   return (
     <nav
@@ -58,7 +57,9 @@ export default function Navbar() {
         Blews&apos; Stitches
       </h2>
       <NavLinks />
-      {user.isLoggedIn ? (
+      {!isMounted ? (
+        <div>Loading</div>
+      ) : user?.isLoggedIn ? (
         <div className="flex gap-2.5 items-center">
           <p className="tracking-wide">
             Welcome {user.firstName}

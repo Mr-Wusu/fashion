@@ -32,15 +32,15 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <ReduxProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ReduxProvider>
           <Navbar />
           {children}
           <Footer />
-        </body>
-      </ReduxProvider>
+        </ReduxProvider>
+      </body>
     </html>
   );
 }
