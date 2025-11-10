@@ -9,9 +9,11 @@ import { setHomePage, setScrolled } from "@/state/navbar/navbarSlice";
 import { logout } from "@/state/user/userSlice";
 import Link from "next/link";
 import { Button } from "./Button";
+import { FaAngleRight, FaAngleDown } from "react-icons/fa6";
 
 export default function Navbar() {
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
   const pathname = usePathname();
   const dispatch = useDispatch();
   const navbar = useSelector((state: RootState) => state.navbar);
@@ -41,6 +43,10 @@ export default function Navbar() {
     }, 2000);
   }
 
+  function handleClick() {
+    setUserOpen(!userOpen);
+  }
+
   return (
     <nav
       className={`h-16 px-4 fixed w-full z-50 shadow-md flex items-center justify-between  ${
@@ -65,13 +71,26 @@ export default function Navbar() {
             Welcome {user.firstName}
             <span className="ml-0.5">{user.isAdmin ? " (Admin)" : "!"}</span>
           </p>
-          <Button
-            className="px-2.5"
-            onClick={handleSignout}
-            disabled={isSigningOut}
+          <FaAngleRight
+            className={`-ml-3 cursor-pointer ${
+              userOpen && "-ml-[9px] rotate-90 transition-all duration-300"
+            }`}
+            onClick={handleClick}
+          />
+
+          <div
+            className={`opacity-0 -translate-y-[100%] ${
+              userOpen && "opacity-100 translate-y-[100%] transition-all duration-300"
+            }`}
           >
-            {isSigningOut ? "Signing out..." : "Sign out"}
-          </Button>
+            <Button
+              className="px-2.5"
+              onClick={handleSignout}
+              disabled={isSigningOut}
+            >
+              {isSigningOut ? "Signing out..." : "Sign out"}
+            </Button>
+          </div>
         </div>
       ) : (
         <Link
