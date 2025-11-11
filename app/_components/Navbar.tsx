@@ -9,7 +9,9 @@ import { setHomePage, setScrolled } from "@/state/navbar/navbarSlice";
 import { logout } from "@/state/user/userSlice";
 import Link from "next/link";
 import { Button } from "./Button";
-import { FaAngleRight, FaAngleDown } from "react-icons/fa6";
+import AdminActions from "./HomePage/AdminActions";
+import UserActions from "./HomePage/UserActions";
+import { IoClose } from "react-icons/io5";
 
 export default function Navbar() {
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -34,6 +36,8 @@ export default function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [pathname, dispatch]);
+
+  // console.log(typeof user.firstName)
 
   function handleSignout() {
     setIsSigningOut(true);
@@ -66,32 +70,46 @@ export default function Navbar() {
       {!isMounted ? (
         <div>Loading</div>
       ) : user?.isLoggedIn ? (
-        <div className="flex gap-2.5 items-center">
-          <p className="tracking-wide">
-            Welcome {user.firstName}
-            <span className="ml-0.5">{user.isAdmin ? " (Admin)" : "!"}</span>
-          </p>
-          <FaAngleRight
-            className={`-ml-3 cursor-pointer ${
-              userOpen && "-ml-[9px] rotate-90 transition-all duration-300"
-            }`}
-            onClick={handleClick}
-          />
-
+        <>
           <div
-            className={`opacity-0 -translate-y-[100%] ${
-              userOpen && "opacity-100 translate-y-[100%] transition-all duration-300"
+            className="flex items-center justify-center bg-rose-500 h-[3rem] w-[3rem] rounded-full cursor-pointer hover:bg-rose-400 transition-colors duration-300"
+            onClick={handleClick}
+          >
+            <p className="font-semibold text-2xl">{user.firstName![0]}</p>
+            <p className="font-semibold text-2xl">{user.surname![0]}</p>
+          </div>
+          <div
+            className={`text-darkRose2 absolute pl-3.5 pr-[1.3rem] pt-2 pb-3 rounded-[.5675rem] flex flex-col gap-3 top-20 -right-64 opacity-0 z-30  bg-lightRose2 ${
+              userOpen && "right-6 opacity-100 transition-all duration-300 shadow-md shadow-black/30"
             }`}
           >
-            <Button
-              className="px-2.5"
-              onClick={handleSignout}
-              disabled={isSigningOut}
+            <div
+              className="absolute z-20 -top-2 -right-2 h-5 w-5 rounded-full grid place-content-center bg-rose-600 text-lightRose2 cursor-pointer hover:bg-rose-500 transition-all duration-200"
+              onClick={handleClick}
             >
-              {isSigningOut ? "Signing out..." : "Sign out"}
-            </Button>
+              <IoClose className="text-[1.125rem]" />
+            </div>
+            <div className="flex flex-col text-[.95rem] ">
+              <p className="">
+                {user?.firstName + " " + user?.surname}{" "}
+                {user?.isAdmin && <span>(Admin)</span>}
+              </p>
+              <p>{user?.email}</p>
+            </div>
+            <div className="h-[2px] w-full bg-darkRose1" />
+            {user?.isAdmin ? <AdminActions /> : <UserActions />}
+            <div className="h-[2px] w-full bg-darkRose1" />
+            <div className="w-full flex items-end">
+              <Button
+                className="px-2.5 ml-auto"
+                onClick={handleSignout}
+                disabled={isSigningOut}
+              >
+                {isSigningOut ? "Signing out..." : "Sign out"}
+              </Button>
+            </div>
           </div>
-        </div>
+        </>
       ) : (
         <Link
           className={`bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-600 hover:to-rose-300 active:scale-95 text-lightRose1 px-2.5 py-1 tracking-wide rounded self-center transition-bg duration-300 ease-in-out $`}
