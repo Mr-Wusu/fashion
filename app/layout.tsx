@@ -5,6 +5,7 @@ import ReduxProvider from "@/contexts/reduxProvider";
 import Navbar from "./_components/Navbar";
 import Footer from "./_components/Footer";
 import connectToDB from "@/lib/mongo";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,28 @@ export default async function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 5000,
+              style: {
+                background: "#fff",
+                color: "#333",
+              },
+              success: {
+                style: {
+                  background: "#10b981",
+                  color: "#fff",
+                },
+              },
+              error: {
+                style: {
+                  background: "#ef4444",
+                  color: "#fff",
+                },
+              },
+            }}
+          />
         </ReduxProvider>
       </body>
     </html>

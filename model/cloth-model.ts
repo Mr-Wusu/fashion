@@ -24,5 +24,5 @@ const clothSchema = new Schema(
   }
 );
 
-const Cloth = mongoose.models.Cloth || mongoose.model("Cloth", clothSchema);
-export default Cloth;
+const Clothe = mongoose.models.Clothe || mongoose.model("Clothe", clothSchema);
+export default Clothe;

@@ -80,7 +80,8 @@ export default function Navbar() {
           </div>
           <div
             className={`text-darkRose2 absolute pl-3.5 pr-[1.3rem] pt-2 pb-3 rounded-[.5675rem] flex flex-col gap-3 top-20 -right-64 opacity-0 z-30  bg-lightRose2 ${
-              userOpen && "right-6 opacity-100 transition-all duration-300 shadow-md shadow-black/30"
+              userOpen &&
+              "right-6 opacity-100 transition-all duration-300 shadow-md shadow-black/30"
             }`}
           >
             <div
@@ -97,7 +98,11 @@ export default function Navbar() {
               <p>{user?.email}</p>
             </div>
             <div className="h-[2px] w-full bg-darkRose1" />
-            {user?.isAdmin ? <AdminActions /> : <UserActions />}
+            {user?.isAdmin ? (
+              <AdminActions onClick={handleClick} />
+            ) : (
+              <UserActions />
+            )}
             <div className="h-[2px] w-full bg-darkRose1" />
             <div className="w-full flex items-end">
               <Button
