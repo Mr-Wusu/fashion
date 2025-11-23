@@ -11,3 +11,20 @@ export interface IErrors {
   required?: string;
   general?: string;
 }
+
+export interface IUser {
+  isLoggenIn?: boolean;
+  isAdmin?: boolean;
+  hasImage?: boolean;
+  firstName?: string;
+  surname?: string;
+  email?: string;
+}
+
+export interface IClothes {
+  _id: string;
+  altTag: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+}

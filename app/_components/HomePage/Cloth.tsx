@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
 
-import { ICloth } from "@/types/types";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
+import { IUser } from "@/types/types";
 import AdminClothEffect from "./AdminClothEffect";
 import Link from "next/link";
 import { Button } from "../Button";
@@ -11,11 +12,19 @@ import { useState } from "react";
 import EditingForm from "./EditingForm";
 import ConfirmDelete from "./ConfirmDelete";
 
+interface ICloth {
+  _id: string; 
+  imageUrl: string;
+  altTag: string;
+  price: number;
+  description: string;
+}
+
 export default function Cloth({ cloth }: { cloth: ICloth }) {
   const [isEditing, setIsEditing] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false)
 
-  const user = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.user) as IUser;
   const buttonStyle =
     "bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-400 hover:to-rose-700 transition-all duration-700 py-2 px-2 rounded-[.27rem] text-lightRose2 font-semibold tracking-wider";
 

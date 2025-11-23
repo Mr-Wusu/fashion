@@ -3,13 +3,13 @@ import { GiClothes } from "react-icons/gi";
 import Cloth from "@/app/_components/HomePage/Cloth";
 import Link from "next/link";
 import { MoonLoader } from "react-spinners";
-import {ICloth} from "@/types/types"
+import { IClothes } from "@/types/types";
 import clothes from "@/data/clothes"
 
 export default async function Clothes() {
 
 
-  const reversedClothes: ICloth[] = clothes;
+  const reversedClothes: IClothes[] = clothes;
 
   if (reversedClothes === undefined)
     return (
