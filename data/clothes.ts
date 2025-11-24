@@ -121,17 +121,5 @@ export const clothesDataConvex = [
   },
 ];
 
-// _id
-// 67a7ed6e3832dff8f1454c90
-// description
-// "If you are planning to japa you must get this one. This jacket is the …"
-// price
-// 23000
-// image
-// "/9j/4AAQSkZJRgABAQEASABIAAD/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbn…"
-// __v
-// 0
-// altTag
-// "Cloth-7.jpg"
 
 export default clothes;

@@ -1,4 +1,5 @@
 import Clothe from "@/model/cloth-model";
+import { IClothes } from "@/types/types";
 import { revalidatePath } from "next/cache";
 
 interface ICloth {
@@ -16,103 +17,122 @@ interface IEditCloth {
   image?: string;
 }
 
-export async function storeCloth(
-  clothInput: ICloth
-) {
-  const {altTag, price, description, image} = clothInput;
+// STORE CLOTH
+export async function storeCloth(clothInput: ICloth) {
+  const { altTag, price, description, image } = clothInput;
 
-  try {
-    // Check if cloth with altTag already exists
-    const tagExists = await Clothe.findOne({ altTag });
-    if(tagExists) {
-      return {
-        success: false,
-        error: "altTag already exists"
-      }
-    }
+  // Check if cloth with altTag already exists
+  const tagExists = await Clothe.findOne({ altTag });
+  if (tagExists) {
+    return {
+      success: false,
+      error: "altTag already exists",
+    };
+  }
 
-    const newCloth = await Clothe.create({
-      altTag,
-      price,
-      description,
-      image,
-    });
+  const newCloth = await Clothe.create({
+    altTag,
+    price,
+    description,
+    image,
+  });
+
+  if (!newCloth) {
+    return {
+      success: false,
+      error: "Failed to store cloth details in mongodb!",
+    };
+  } else {
     revalidatePath("/");
     return {
       success: true,
       message: "User created successfully",
-      clothId: newCloth._id.toString(),
     };
-  } catch(err) {
-    throw new Error(`Failed to store cloth: ${err}` )
   }
 }
 
+// UPDATE CLOTH
 export async function editClothDB(editInput: IEditCloth) {
   const { clothId, altTag, price, description, image } = editInput;
 
-  try {
-    // Find the existing cloth
-    const existingCloth = await Clothe.findById(clothId);
+  // Find the existing cloth
+  const existingCloth = await Clothe.findById(clothId);
 
-    if (!existingCloth) {
+  if (!existingCloth) {
+    return {
+      success: false,
+      error: "Cloth does not exist in database",
+    };
+  }
+
+  // If altTag is being changed, check if new altTag already exists
+  if (altTag && altTag !== existingCloth.altTag) {
+    const tagExists = await Clothe.findOne({ altTag });
+    if (tagExists) {
       return {
         success: false,
-        error: "Cloth not found",
+        error: "altTag already exists",
       };
     }
+  }
 
-    // If altTag is being changed, check if new altTag already exists
-    if (altTag && altTag !== existingCloth.altTag) {
-      const tagExists = await Clothe.findOne({ altTag });
-      if (tagExists) {
-        return {
-          success: false,
-          error: "altTag already exists",
-        };
-      }
-    }
+  const updateData: Partial<ICloth> = { altTag, price, description, image };
 
-    // Prepare update object with only provided fields
-    const updateData: Partial<ICloth> = {};
-    if (altTag !== undefined) updateData.altTag = altTag;
-    if (price !== undefined) updateData.price = price;
-    if (description !== undefined) updateData.description = description;
-    if (image !== undefined) updateData.image = image;
+  // Update the cloth
+  const updatedCloth = await Clothe.findByIdAndUpdate(clothId, updateData, {
+    new: true,
+    runValidators: true,
+  });
 
-    // Update the cloth
-    const updatedCloth = await Clothe.findByIdAndUpdate(clothId, updateData, {
-      new: true,
-      runValidators: true,
-    });
-
+  if (updatedCloth) {
     revalidatePath("/");
-
     return {
       success: true,
       message: "Cloth updated successfully",
-      cloth: updatedCloth,
-      previousImageUrl: existingCloth.image,
     };
-  } catch (err) {
-    throw new Error(`Failed to edit cloth: ${err}`);
+  } else {
+    return {
+      success: false,
+      message: "Error in updating cloth",
+    };
   }
 }
 
+// GET CERTAIN CLOTH
 export async function getClothById(clothId: string) {
-  try {
-    const cloth = await Clothe.findById(clothId);
-    if (!cloth) {
-      return {
-        success: false,
-        error: "Cloth not found",
-      };
-    }
+  const cloth = await Clothe.findById(clothId);
+  if (!cloth) {
+    return {
+      success: false,
+      error: "Cloth not found",
+    };
+  } else {
     return {
       success: true,
-      cloth: cloth,
+      cloth: {
+        _id: cloth._id.toString(),
+        imageUrl: cloth.image,
+        altTag: cloth.altTag,
+        price: cloth.price,
+        description: cloth.description,
+      },
     };
-  } catch (err) {
-    throw new Error(`Failed to get cloth: ${err}`);
+  }
+}
+
+// GET ALL CLOTHES
+export async function getAllClothes(): Promise<IClothes[]> {
+  const clothes = await Clothe.find({}).sort({ createdAt: -1 }); // Sort by newest first
+
+  if(clothes) {
+    return clothes.map((cloth) => ({
+      _id: cloth._id.toString(),
+      imageUrl: cloth.image,
+      altTag: cloth.altTag,
+      price: cloth.price,
+      description: cloth.description,
+    }))
+  } else {
+    return []
   }
 }

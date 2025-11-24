@@ -3,24 +3,24 @@ import { GiClothes } from "react-icons/gi";
 import Cloth from "@/app/_components/HomePage/Cloth";
 import Link from "next/link";
 import { MoonLoader } from "react-spinners";
-import { IClothes } from "@/types/types";
-import clothes from "@/data/clothes"
+import { getAllClothes } from "@/queries/clothes";
+import clothesDummy from "@/data/clothes"
 
 export default async function Clothes() {
+  const clothes = await getAllClothes();
 
-
-  const reversedClothes: IClothes[] = clothes;
-
-  if (reversedClothes === undefined)
+  if (clothes === undefined)
     return (
       <div className="flex justify-center items-center h-[50vh]">
         <MoonLoader color="#E11D48" size={50} />
       </div>
     );
-  if (reversedClothes?.length === 0)
+  if (clothes?.length === 0)
     return (
-      <div className="mx-auto w-4/5 text-lg py-7 ">
-        We are restocking, bringing you awesome new designs. New arrivals 😄😎!
+      <div>
+        {clothesDummy.map((cloth) => (
+          <Cloth key={cloth._id} cloth={cloth} />
+        ))}
       </div>
     );
 
@@ -35,7 +35,7 @@ export default async function Clothes() {
       <div
         className={`grid place-items-center gap-12 md:grid-cols-2 md:gap-x-0 md:w-[45rem] lg:grid-cols-3 lg:w-full`}
       >
-        {reversedClothes.map((cloth) => (
+        {clothes.map((cloth) => (
           <Cloth key={cloth._id} cloth={cloth} />
         ))}
       </div>

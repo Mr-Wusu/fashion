@@ -53,7 +53,7 @@ export default async function editCloth(
     return { errors };
   }
 
-  let newImageUrl = clothResult.cloth.image;
+  let newImageUrl = clothResult.cloth.imageUrl;
 
   if (image && image.size > 0) {
     // Validate image file type
@@ -74,7 +74,7 @@ export default async function editCloth(
   newImageUrl = await uploadImage(image as File);
 
   // Delete old image from Cloudinary
-  const deleteSuccess = await deleteImage(clothResult.cloth.image);
+  const deleteSuccess = await deleteImage(clothResult.cloth.imageUrl);
   if (!deleteSuccess) {
     console.warn("Failed to delete old image from Cloudinary");
     // Don't throw error, continue with update
@@ -95,10 +95,14 @@ export default async function editCloth(
     image?: string;
   } = {};
 
-  if (altTag.trim() !== "") updateData.altTag = altTag.trim();
+  if (altTag && altTag.trim() !== "") {
+    updateData.altTag = altTag.trim();
+  }
   if (price !== null && price !== "") updateData.price = Number(price);
-  if (description.trim() !== "") updateData.description = description.trim();
-  if (newImageUrl !== clothResult.cloth.image) updateData.image = newImageUrl;
+ if (description && description.trim() !== "") {
+    updateData.description = description.trim();
+}
+  if (newImageUrl !== clothResult.cloth.imageUrl) updateData.image = newImageUrl;
 
   // Update cloth in database
   const result = await editClothDB({

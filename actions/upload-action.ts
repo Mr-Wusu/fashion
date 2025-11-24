@@ -60,12 +60,14 @@ export default async function clothUpload(
     altTag,
   });
 
-  if (!result) {
-    errors.general = "Failed to store cloth details in mongodb!";
+  if (result.success === true) {
+    errors.general = result.message;
+    return { errors };
+  } else {
+    errors.general = result.error;
     return { errors };
   }
 
-  // Return success
-  errors.general = "Cloth uploaded successfully!";
-  return { errors };
+  
+  
 }
