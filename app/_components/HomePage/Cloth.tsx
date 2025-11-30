@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 
-
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { IUser } from "@/types/types";
@@ -13,7 +12,7 @@ import EditingForm from "./EditingForm";
 import ConfirmDelete from "./ConfirmDelete";
 
 interface ICloth {
-  _id: string; 
+  _id: string;
   imageUrl: string;
   altTag: string;
   price: number;
@@ -22,7 +21,7 @@ interface ICloth {
 
 export default function Cloth({ cloth }: { cloth: ICloth }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [openConfirmDelete, setOpenConfirmDelete] = useState(false)
+  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
 
   const user = useSelector((state: RootState) => state.user) as IUser;
   const buttonStyle =
@@ -45,8 +44,9 @@ export default function Cloth({ cloth }: { cloth: ICloth }) {
         <Image
           className="object-cover absolute"
           src={cloth.imageUrl}
-          alt={cloth.altTag}
+          alt="testing"
           fill
+
         />
       </div>
       <div className="flex flex-col px-3  pt-3 pb-4">

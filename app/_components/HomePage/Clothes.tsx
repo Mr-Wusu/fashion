@@ -15,14 +15,7 @@ export default async function Clothes() {
         <MoonLoader color="#E11D48" size={50} />
       </div>
     );
-  if (clothes?.length === 0)
-    return (
-      <div>
-        {clothesDummy.map((cloth) => (
-          <Cloth key={cloth._id} cloth={cloth} />
-        ))}
-      </div>
-    );
+
 
   return (
     <section className="flex flex-col gap-6 bg-lightRose1 px-6 pt-11 pb-9 ">
@@ -35,9 +28,13 @@ export default async function Clothes() {
       <div
         className={`grid place-items-center gap-12 md:grid-cols-2 md:gap-x-0 md:w-[45rem] lg:grid-cols-3 lg:w-full`}
       >
-        {clothes.map((cloth) => (
+        {clothes?.length === 0 ? clothesDummy.map((cloth) => (
+          <Cloth key={cloth._id} cloth={cloth} />
+        )): clothes.map((cloth) => (
           <Cloth key={cloth._id} cloth={cloth} />
         ))}
+        
+        
       </div>
       <Link
         className=" w-max font-semibold text-darkRose2 mt-2 border-b-2 border-solid border-transparent hover:border-darkRose1 p-1 transition-all  duration-300 active:scale-90 focus:border-darkRose1 focus:border-2 md:text-base lg:text-lg"

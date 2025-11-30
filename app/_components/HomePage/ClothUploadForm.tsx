@@ -8,25 +8,27 @@ import toast from "react-hot-toast";
 export default function ClothUploadForm() {
   const [formState, formAction, isPending] = useActionState(clothUpload, {
     errors: {},
+    successMessage: undefined, // Update initial state
   });
 
    useEffect(() => {
-     if (formState.errors.general) {
-       // Check if it's a success message
-       if (formState.errors.general.includes("successfully")) {
-         toast.success(formState.errors.general, {
-           duration: 4000,
-           icon: "✅",
-         });
-       } else {
-         // It's an error message
-         toast.error(formState.errors.general, {
-           duration: 5000,
-           icon: "❌",
-         });
-       }
+     // Handle Success
+     if (formState.successMessage) {
+       toast.success(formState.successMessage, {
+         duration: 4000,
+         icon: "✅",
+       });
+       // Optionally, reset the form here if needed
      }
-   }, [formState.errors.general]);
+     
+     // Handle General Error
+     if (formState.errors.general) {
+       toast.error(formState.errors.general, {
+         duration: 5000,
+         icon: "❌",
+       });
+     }
+   }, [formState.errors.general, formState.successMessage]);
 
 
   return (

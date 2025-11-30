@@ -46,7 +46,7 @@ export async function storeCloth(clothInput: ICloth) {
     revalidatePath("/");
     return {
       success: true,
-      message: "User created successfully",
+      message: "Cloth successfully uploaded!",
     };
   }
 }
