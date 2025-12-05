@@ -1,4 +1,4 @@
-import ClothId from "@/app/_components/ClothId";
+import ClothId from "@/app/_components/ClothId/ClothId";
 
 export default async function Page({
   params,
@@ -7,8 +7,8 @@ export default async function Page({
 }) {
   const slug = (await params).slug;
   return (
-    <div className=" flex flex-col items-center justify-center  ">
-      <ClothId slug={slug}  bg="rounded-none"  />
+    <div className="min-h-screen flex flex-col items-center justify-center ">
+      <ClothId slug={slug} bg="" />
     </div>
   );
 }

@@ -28,7 +28,7 @@ export default function Cloth({ cloth }: { cloth: ICloth }) {
     "bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-400 hover:to-rose-700 transition-all duration-700 py-2 px-2 rounded-[.27rem] text-lightRose2 font-semibold tracking-wider";
 
   return (
-    <figure className="flex flex-col shadow-md shadow-black/55 overflow-hidden rounded-[.7rem] h-fit w-[19rem] relative">
+    <figure className="flex flex-col shadow-md shadow-black/55 overflow-hidden rounded-[.7rem] h-fit w-[19rem] relative hover:scale-110 transition-all duration-300 hover:shadow-lg hover:shadow-black/75">
       {openConfirmDelete && (
         <ConfirmDelete setOpenConfirmDelete={setOpenConfirmDelete} />
       )}
@@ -46,7 +46,6 @@ export default function Cloth({ cloth }: { cloth: ICloth }) {
           src={cloth.imageUrl}
           alt="testing"
           fill
-
         />
       </div>
       <div className="flex flex-col px-3  pt-3 pb-4">

@@ -30,7 +30,12 @@ export default async function signin(
   if (Object.keys(errors).length > 0) {
     return { errors };
   }
+
   const result = await authenticateUser([enteredEmail, password]);
+    if (!result.success || !result.user) {
+      errors.general = result.error || "Login failed. Please try again.";
+      return { errors };
+    }
 
   const { firstName, surname, email } = result.user;
 
