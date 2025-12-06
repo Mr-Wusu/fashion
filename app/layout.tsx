@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/contexts/reduxProvider";
-import Navbar from "./_components/Navbar";
-import Footer from "./_components/Footer";
+import Navbar from "./_components/Navigation/Navbar";
+import Footer from "./_components/Footer/Footer";
 import connectToDB from "@/lib/mongo";
 import { Toaster } from "react-hot-toast";
 

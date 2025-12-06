@@ -1,6 +1,5 @@
-import { Button } from "../Button";
+import { Button } from "../Navigation/Button";
 import { IoClose } from "react-icons/io5";
-
 
 interface EditingFormProps {
   setIsEditing: (isEditing: boolean) => void;

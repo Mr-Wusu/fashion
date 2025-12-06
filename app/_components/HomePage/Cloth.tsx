@@ -6,7 +6,7 @@ import { RootState } from "@/state/store";
 import { IUser } from "@/types/types";
 import AdminClothEffect from "./AdminClothEffect";
 import Link from "next/link";
-import { Button } from "../Button";
+import { Button } from "../Navigation/Button";
 import { useState } from "react";
 import EditingForm from "./EditingForm";
 import ConfirmDelete from "./ConfirmDelete";

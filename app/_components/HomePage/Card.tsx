@@ -66,11 +66,11 @@ export default function Card({ card }: CardProps) {
           <span className="font-bold">{card.commentMinor}</span>
         </p>
       </div>
-      <div className="relative h-full w-[17rem] bg-rose-300">
+      <div className="hidden lg:block relative h-full w-[17rem] bg-rose-300">
         <Image
           className="object-cover"
           src={card.image[0]}
-          alt={`${card.position}s Photo`}
+          alt={`${card.position}'s Photo`}
           fill
         />
       </div>

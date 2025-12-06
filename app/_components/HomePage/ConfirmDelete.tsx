@@ -1,24 +1,21 @@
 "use client";
 
-import { Button } from "@/app/_components/Button";
-import { ButtonWhite } from "@/app/_components/ButtonWhite";
+import { Button } from "@/app/_components/Navigation/Button";
+import { ButtonWhite } from "@/app/_components/Navigation/ButtonWhite";
 
 // import toast from "react-hot-toast";
 
 interface ConfirmDeleteProps {
-
   setOpenConfirmDelete: (isOpen: boolean) => void;
 }
 
 export default function ConfirmDelete({
-
   setOpenConfirmDelete,
 }: ConfirmDeleteProps) {
-
-function handleDeleteCloth(id:string) {
-  //Perform some operations here
-  console.log(id)
-}
+  function handleDeleteCloth(id: string) {
+    //Perform some operations here
+    console.log(id);
+  }
 
   return (
     <div className="absolute top-0 flex flex-col items-center justify-center w-full h-full bg-white bg-opacity-90 rounded-[.7rem] shadow-lg shadow-black p-6 z-50 text-center">

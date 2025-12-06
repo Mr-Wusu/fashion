@@ -1,5 +1,5 @@
 import Image from "next/image";
-import AuthForm from "@/app/_components/AuthForm";
+import AuthForm from "@/app/_components/Navigation/AuthForm";
 
 const signUpBg = "/images/otherPhotos/male-female.webp";
 

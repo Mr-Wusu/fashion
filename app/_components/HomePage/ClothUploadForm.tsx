@@ -1,6 +1,6 @@
 "use client";
 import { PulseLoader } from "react-spinners";
-import { Button } from "../Button";
+import { Button } from "../Navigation/Button";
 import { useActionState, useEffect } from "react";
 import clothUpload from "@/actions/upload-action";
 import toast from "react-hot-toast";
@@ -11,25 +11,24 @@ export default function ClothUploadForm() {
     successMessage: undefined, // Update initial state
   });
 
-   useEffect(() => {
-     // Handle Success
-     if (formState.successMessage) {
-       toast.success(formState.successMessage, {
-         duration: 4000,
-         icon: "✅",
-       });
-       // Optionally, reset the form here if needed
-     }
-     
-     // Handle General Error
-     if (formState.errors.general) {
-       toast.error(formState.errors.general, {
-         duration: 5000,
-         icon: "❌",
-       });
-     }
-   }, [formState.errors.general, formState.successMessage]);
+  useEffect(() => {
+    // Handle Success
+    if (formState.successMessage) {
+      toast.success(formState.successMessage, {
+        duration: 4000,
+        icon: "✅",
+      });
+      // Optionally, reset the form here if needed
+    }
 
+    // Handle General Error
+    if (formState.errors.general) {
+      toast.error(formState.errors.general, {
+        duration: 5000,
+        icon: "❌",
+      });
+    }
+  }, [formState.errors.general, formState.successMessage]);
 
   return (
     <form className="flex flex-col gap-4 px-4 py-6" action={formAction}>
