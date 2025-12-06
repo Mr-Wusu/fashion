@@ -1,6 +1,6 @@
 "use client";
 import { PulseLoader } from "react-spinners";
-import { Button } from "../Navigation/Button";
+import { Button } from "../Miscellaneous/Button";
 import { useActionState, useEffect } from "react";
 import clothUpload from "@/actions/upload-action";
 import toast from "react-hot-toast";

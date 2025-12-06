@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/app/_components/Navigation/Button";
-import { ButtonWhite } from "@/app/_components/Navigation/ButtonWhite";
+import { Button } from "@/app/_components/Miscellaneous/Button";
+import { ButtonWhite } from "@/app/_components/Miscellaneous/ButtonWhite";
 
 // import toast from "react-hot-toast";
 

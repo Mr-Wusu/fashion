@@ -1,4 +1,4 @@
-import { Button } from "../Navigation/Button";
+import { Button } from "../Miscellaneous/Button";
 import { IoClose } from "react-icons/io5";
 
 interface EditingFormProps {
