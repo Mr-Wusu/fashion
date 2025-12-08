@@ -56,7 +56,10 @@ export default function Cloth({ cloth }: { cloth: ICloth }) {
             user.isAdmin ? "flex justify-center " : "flex justify-between"
           }`}
         >
-          <AddToCart />
+          <AddToCart
+            cloth={cloth}
+            styles="px-2 py-1.5 w-[6.5rem]"
+          />
           <Link
             className={`${buttonStyle} ${
               user.isAdmin ? "w-3/4 grid place-content-center" : ""

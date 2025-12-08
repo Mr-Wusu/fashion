@@ -13,6 +13,7 @@ import AdminActions from "../HomePage/AdminActions";
 import UserActions from "../HomePage/UserActions";
 import { IoClose } from "react-icons/io5";
 
+
 export default function Navbar() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -21,6 +22,7 @@ export default function Navbar() {
   const navbar = useSelector((state: RootState) => state.navbar);
   const user = useSelector((state: RootState) => state.user);
   const isMounted = useMounted();
+
 
   useEffect(() => {
     dispatch(setHomePage(pathname === "/"));
@@ -37,7 +39,7 @@ export default function Navbar() {
     };
   }, [pathname, dispatch]);
 
-  // console.log(typeof user.firstName)
+  
 
   function handleSignout() {
     setIsSigningOut(true);
