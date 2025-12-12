@@ -18,3 +18,4 @@ Where the nextjs-blews uses Nextjs, clerk (for authentication) and convex for ba
 - Add feature for making payment for cloth.
 - Add feature for receiving cloth suggestions from users.
 - Make the navigation ui adapt to mobile screens.
+- Also work on the editing feature on clothes for admin account.

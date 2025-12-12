@@ -4,11 +4,10 @@ import signin from "@/actions/signin-action";
 import Link from "next/link";
 import { useActionState, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "@/state/user/userSlice"; 
-import { useEffect } from "react"; 
-import { useRouter } from "next/navigation"; 
+import { login } from "@/state/user/userSlice";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "./Button";
-
 
 type AuthFormProps = {
   mode: "sign-in" | "sign-up";
@@ -20,10 +19,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [formState, formAction, isPending] = useActionState(accessType, {
     errors: {},
     user: undefined,
-  }); 
-  const dispatch = useDispatch(); 
+  });
+  const dispatch = useDispatch();
   const router = useRouter();
-  console.log(formState.user?.firstName)
+  console.log(formState.user?.firstName);
 
   useEffect(() => {
     if (formState.user) {
@@ -34,7 +33,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   }, [formState.user, dispatch, router]);
 
-  if (isPending) formRef.current?.reset();
+  if (isPending || !formState.user) formRef.current?.reset();
 
   return (
     <form
