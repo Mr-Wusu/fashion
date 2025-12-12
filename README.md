@@ -9,3 +9,12 @@ Where the nextjs-blews uses Nextjs, clerk (for authentication) and convex for ba
 - React's useActionState
 - Redux Toolkit for global state management.
 - NextJs' server actions
+
+## To do's
+
+- Make authentication and authorisation cookies-based.
+- Add a reset password feature for users who forgot their password.
+- Persist cart to db, such that it reflects the true status of a said user's cart.
+- Add feature for making payment for cloth.
+- Add feature for receiving cloth suggestions from users.
+- Make the navigation ui adapt to mobile screens.

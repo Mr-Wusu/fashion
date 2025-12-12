@@ -46,7 +46,7 @@ function Cart({ item }: CartProps) {
           <Image src={item.imageUrl} alt={`${item.name}'s photo`} fill />
         </div>
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm">{item.name}</h3>
+          <h3 className="text-sm text-darkRose1 font-semibold">NGN{item.unitPrice} each</h3>
           <div
             className="flex cursor-pointer gap-2"
             onClick={removeItemHandler}

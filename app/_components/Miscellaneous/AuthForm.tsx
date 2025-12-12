@@ -2,18 +2,20 @@
 import signup from "@/actions/signup-action";
 import signin from "@/actions/signin-action";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "@/state/user/userSlice"; 
 import { useEffect } from "react"; 
 import { useRouter } from "next/navigation"; 
 import { Button } from "./Button";
 
+
 type AuthFormProps = {
   mode: "sign-in" | "sign-up";
 };
 
 export default function AuthForm({ mode }: AuthFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const accessType = mode === "sign-up" ? signup : signin;
   const [formState, formAction, isPending] = useActionState(accessType, {
     errors: {},
@@ -32,12 +34,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   }, [formState.user, dispatch, router]);
 
+  if (isPending) formRef.current?.reset();
+
   return (
     <form
       action={formAction}
       className={`flex flex-col gap-5 z-20 bg-lightRose1 absolute p-10 rounded-[.9rem] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${
         mode === "sign-up" ? "mt-7" : ""
       }`}
+      ref={formRef}
     >
       {mode === "sign-up" && (
         <>
