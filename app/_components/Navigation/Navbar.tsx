@@ -9,11 +9,11 @@ import { logout } from "@/state/user/userSlice";
 import Link from "next/link";
 import { Button } from "@/app/_components/Miscellaneous/Button";
 import { IoClose } from "react-icons/io5";
-import AdminActions from "../HomePage/AdminActions";
-import UserActions from "../HomePage/UserActions";
-import NavLinks from "./NavLinks";
-import SideNav from "./SideNav";
-import User from "./User";
+import AdminActions from "@/app/_components/HomePage/AdminActions";
+import UserActions from "@/app/_components/HomePage/UserActions";
+import NavLinks from "@/app/_components/Navigation/NavLinks";
+import SideNav from "@/app/_components/Navigation/SideNav";
+import User from "@/app/_components/Navigation/User";
 
 export default function Navbar() {
   const [isSigningOut, setIsSigningOut] = useState(false);
