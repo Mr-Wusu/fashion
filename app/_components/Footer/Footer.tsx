@@ -17,7 +17,7 @@ function Footer() {
       </div>
       <div className="flex flex-col gap-[.22em]">
         <h2 className="font-bold">Join our social media community</h2>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center justify-center">
           <FaLinkedinIn className="" />
           <FaFacebookF className="" />
           <FaInstagram className="" />

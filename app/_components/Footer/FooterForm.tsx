@@ -11,7 +11,7 @@ import { RootState } from "@/state/store";
 export default function FooterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const user = useSelector((state:RootState)=> state.user)
+  const user = useSelector((state: RootState) => state.user);
 
   function showToastWithCloseButton(message: string) {
     toast.custom((t: Toast) => (
@@ -81,6 +81,7 @@ export default function FooterForm() {
     }
   }
 
+  
   return (
     <form className="flex flex-col gap-2" ref={formRef} onSubmit={handleSubmit}>
       <div className="flex flex-col gap-2">
@@ -101,9 +102,9 @@ export default function FooterForm() {
             Describe this design:
           </label>
           <textarea
-            className="text-sm cursor-pointer text-darkRose2 w-48 rounded-[.5rem] p-1"
+            className="text-sm cursor-pointer text-darkRose2 w-48 lg:w-64 rounded-[.5rem] p-1"
             placeholder="Describe your design here..."
-            rows={4}
+            rows={6}
             name="description"
             required
           />
