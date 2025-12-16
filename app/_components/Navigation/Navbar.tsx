@@ -12,8 +12,8 @@ import { IoClose } from "react-icons/io5";
 import AdminActions from "../HomePage/AdminActions";
 import UserActions from "../HomePage/UserActions";
 import NavLinks from "./NavLinks";
-import SideNav from "./SideNav";
-import User from "./User"
+import SideNav from "@/app/_components/Navigation/SideNav";
+import User from "@/app/_components/Navigation/User";
 
 export default function Navbar() {
   const [isSigningOut, setIsSigningOut] = useState(false);

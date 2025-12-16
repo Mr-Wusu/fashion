@@ -54,22 +54,24 @@ export default function FooterForm() {
     const selectedImage = formData.get("image") as File;
     const description = formData.get("description") as string;
 
+    if (selectedImage && description) console.log("Good to test");
+
     try {
       // Step 1: Get upload URL
-      const uploadUrl = await generateUploadUrl();
+      // const uploadUrl = await generateUploadUrl();
 
       // Step 2: Upload the image
-      const result = await fetch(uploadUrl, {
-        method: "POST",
-        headers: { "Content-Type": selectedImage.type },
-        body: selectedImage,
-      });
-      const { storageId } = await result.json();
+      // const result = await fetch(uploadUrl, {
+      //   method: "POST",
+      //   headers: { "Content-Type": selectedImage.type },
+      //   body: selectedImage,
+      // });
+      // const { storageId } = await result.json();
 
-      await saveSpecialRequest({
-        description,
-        image: storageId,
-      });
+      // await saveSpecialRequest({
+      //   description,
+      //   image: storageId,
+      // });
 
       toast.success("Design succesfully suggested!");
       formRef.current?.reset(); // Reset the form after successful submission
@@ -81,7 +83,6 @@ export default function FooterForm() {
     }
   }
 
-  
   return (
     <form className="flex flex-col gap-2" ref={formRef} onSubmit={handleSubmit}>
       <div className="flex flex-col gap-2">
