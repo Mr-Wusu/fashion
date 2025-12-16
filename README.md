@@ -4,12 +4,16 @@ This project is a remake of the nextjs-blews repository. It is mainly for proof 
 To overcome the burden of NDA. It is ficticious in terms of names and positions.
 Where the nextjs-blews uses Nextjs, clerk (for authentication and authorization) and convex for backend to store images or cloth info in general, this project uses Nextjs, cloudinary for storing images and MongoDB for storing other cloth details including references to the cloudinary images. It is ongoing and has better experience for users in terms of loading states courtesy of React's useActionState used in patnership with Nextjs' server actions! The app has two major end-users: admin and non-admin users; and ui/access/features differs based on the end-user.
 For admin access use (or just confirm with app owner):
-email:
-password:
+
+- email:
+- password:
+
 Admin gets to:
-upload clothes and delete them from database (CRUD operations),
-receive users' clothes suggestions,
-see all orders made by every user,
+
+- upload clothes and delete them from database (CRUD operations),
+- receive users' clothes suggestions,
+- see all orders made by every user,
+- among other features.
 
 ## Some major concepts/technologies used
 
