@@ -3,7 +3,7 @@ import { TiShoppingCart } from "react-icons/ti";
 import { VscGear } from "react-icons/vsc";
 
 
-export default function AdminActions() {
+export default function UserActions() {
   return (
     <ul className="px-3 flex flex-col gap-3 text-[.9rem]">
       <div className="flex gap-3 items-center hover:scale-110 hover:text-darkRose1 transition-all duration-300">
