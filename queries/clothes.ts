@@ -99,24 +99,26 @@ export async function editClothDB(editInput: IEditCloth) {
 }
 
 // GET CERTAIN CLOTH
-export async function getClothById(clothId: string) {
-  const cloth = await Clothe.findById(clothId);
-  if (!cloth) {
-    return {
-      success: false,
-      error: "Cloth not found",
-    };
-  } else {
-    return {
-      success: true,
-      cloth: {
-        _id: cloth._id.toString(),
-        imageUrl: cloth.image,
-        altTag: cloth.altTag,
-        price: cloth.price,
-        description: cloth.description,
-      },
-    };
+export async function getClothById(id: string) {
+  try {
+    
+    
+    // Validate MongoDB ObjectId format
+    if (!id || id.length !== 24) {
+      return null;
+    }
+    
+    const cloth = await Clothe.findById(id).lean();
+    
+    if (!cloth) {
+      return null;
+    }
+    
+    // Serialize the data properly for Next.js
+    return JSON.parse(JSON.stringify(cloth));
+  } catch (error) {
+    console.error('Error fetching cloth by ID:', error);
+    return null;
   }
 }
 

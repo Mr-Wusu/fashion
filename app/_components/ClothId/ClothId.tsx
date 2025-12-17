@@ -1,4 +1,5 @@
-import { getAllClothes } from "@/queries/clothes";
+import { notFound } from "next/navigation";
+import { getClothById } from "@/queries/clothes";
 import Image from "next/image";
 import AddToCart from "./AddToCart";
 import Back from "../Miscellaneous/Back";
@@ -10,17 +11,12 @@ export default async function ClothId({
   slug: string;
   bg: string;
 }) {
-  const clothes = await getAllClothes();
+  const cloth = await getClothById(slug);
 
-  const cloth = clothes?.find((cloth) => cloth._id === slug);
   console.log(cloth);
 
   if (!cloth) {
-    return (
-      <div className={`${bg} flex flex-col justify-center items-center`}>
-        Cloth not found! Might have been deleted from database
-      </div>
-    );
+    notFound();
   } else
     return (
       <div
@@ -33,8 +29,9 @@ export default async function ClothId({
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            src={cloth.imageUrl || "/placeholder-image.jpg"}
+            src={cloth.image}
             alt={cloth.altTag}
+            loading="eager"
           />
         </div>
         <div
@@ -42,10 +39,12 @@ export default async function ClothId({
         >
           <h1>Cloth Id: {cloth._id}</h1>
           <div className="flex flex-col mt-2 md:text-[1.1rem]">
-            <p className="font-semibold leading-5 mb-2">Name: {cloth.altTag}</p>
+            <p className="font-semibold leading-5 mb-2">
+              Name: {cloth.altTag}
+            </p>
             <p className="text-justify">
               Description:{" "}
-              {`${cloth.description} ipsum dolor sit amet, consectetur adipiscing elit. Ut ac porttitor metus, et consequat eros.`}
+              {`${cloth.cloth?.description} ipsum dolor sit amet, consectetur adipiscing elit. Ut ac porttitor metus, et consequat eros.`}
             </p>
           </div>
           <div className="hidden gap-7 w-4/5 mx-auto items-center lg+:flex">
