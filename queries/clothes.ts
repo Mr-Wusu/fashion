@@ -1,3 +1,4 @@
+import connectToDB from "@/lib/mongo";
 import Clothe from "@/model/cloth-model";
 import { IClothes } from "@/types/types";
 import { revalidatePath } from "next/cache";
@@ -19,6 +20,7 @@ interface IEditCloth {
 
 // STORE CLOTH
 export async function storeCloth(clothInput: ICloth) {
+  await connectToDB();
   const { altTag, price, description, image } = clothInput;
 
   // Check if cloth with altTag already exists
@@ -101,7 +103,8 @@ export async function editClothDB(editInput: IEditCloth) {
 // GET CERTAIN CLOTH
 export async function getClothById(id: string) {
   try {
-    
+  
+    await connectToDB();
     
     // Validate MongoDB ObjectId format
     if (!id || id.length !== 24) {
