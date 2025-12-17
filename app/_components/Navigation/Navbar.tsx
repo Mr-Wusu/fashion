@@ -51,6 +51,10 @@ export default function Navbar() {
     setUserOpen(!userOpen);
   }
 
+  function handleOpenUser() {
+    setUserOpen(!userOpen)
+  }
+
   return (
     <>
       <nav
@@ -65,13 +69,21 @@ export default function Navbar() {
         {!isMounted ? (
           <div>Loading</div>
         ) : user?.isLoggedIn ? (
-          <div className="flex text-darkRose1 rounded-full bg-yellow-200">
-            <p>{user.firstName?.charAt(0)}</p>
-            <p>{user.surname?.charAt(0)}</p>
+          <div
+            className="flex text-darkRose1 rounded-full bg-yellow-200"
+            onClick={handleOpenUser}
+          >
+            <p className="font-semibold">{user.firstName?.charAt(0)}</p>
+            <p className="font-semibold">{user.surname?.charAt(0)}</p>
             {userOpen && <User />}
           </div>
         ) : (
-          <Button className="px-1.5 font-semibold">Sign up</Button>
+          <Link
+            href="/auth/sign-up"
+            className={`bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-600 hover:to-rose-300 active:scale-95 text-lightRose1 font-semibold px-2.5 py-1 tracking-wide rounded self-center transition-bg duration-300 ease-in-out $`}
+          >
+            Sign up
+          </Link>
         )}
       </nav>
       <nav

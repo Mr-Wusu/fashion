@@ -38,14 +38,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
   return (
     <form
       action={formAction}
-      className={`flex flex-col gap-5 z-20 bg-lightRose1 absolute p-10 rounded-[.9rem] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${
+      className={`flex flex-col gap-5 z-20 w-[90%] md:w-fit bg-lightRose1 absolute p-5 md:p-10 rounded-[.9rem] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${
         mode === "sign-up" ? "mt-7" : ""
       }`}
       ref={formRef}
     >
       {mode === "sign-up" && (
         <>
-          <div className="flex flex-col gap-1.5 w-80 text-[17.5px]">
+          <div className="flex flex-col gap-1.5 w-full md:w-80 text-[17.5px]">
             <label htmlFor="firstname">Enter firstname:</label>
             <input
               className="ring-2 rounded-[.6rem] py-1.5 px-2 text-darkRose2 ring-darkRose2 "
@@ -54,7 +54,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               name="firstname"
             />
           </div>
-          <div className="flex flex-col gap-1.5 w-80 text-[17.5px]">
+          <div className="flex flex-col gap-1.5 text-[17.5px] w-full md:w-80">
             <label htmlFor="surname">Enter surname:</label>
             <input
               className="ring-2 rounded-[.6rem] py-1.5 px-2 text-darkRose2 ring-darkRose2 "
@@ -66,7 +66,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         </>
       )}
 
-      <div className="flex flex-col gap-1.5 w-80 text-[17.5px]">
+      <div className="flex flex-col gap-1.5 w-full md:w-80 text-[17.5px]">
         <label htmlFor="email">Enter email:</label>
         <input
           className="ring-2 rounded-[.6rem] py-1.5 px-2 text-darkRose2 ring-darkRose2 "
@@ -75,7 +75,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           name="email"
         />
       </div>
-      <div className="flex flex-col gap-1.5 w-80 text-[17.5px]">
+      <div className="flex flex-col gap-1.5 w-full md:w-80 text-[17.5px]">
         <label htmlFor="password">Enter password:</label>
         <input
           className="ring-2 rounded-[.6rem] py-1.5 px-2 text-darkRose2 ring-darkRose2"
