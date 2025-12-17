@@ -13,7 +13,6 @@ export default async function ClothId({
 }) {
   const cloth = await getClothById(slug);
 
-  console.log(cloth);
 
   if (!cloth) {
     notFound();

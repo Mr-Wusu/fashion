@@ -1,5 +1,7 @@
 import ClothId from "@/app/_components/ClothId/ClothId";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   params,
 }: {
