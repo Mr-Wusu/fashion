@@ -54,7 +54,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`md:hidden justify-between items-center p-3 fixed w-full z-50 flex shadow-sm shadow-black/30 ${
+        className={`md:hidden justify-between min-h-16 items-center p-3 fixed w-full z-50 flex shadow-sm shadow-black/30 ${
           navbar.isHomePage && !navbar.isScrolled
             ? "bg-transparent text-lightRose1"
             : "bg-lightRose1 text-rose-800 "
@@ -62,7 +62,17 @@ export default function Navbar() {
       >
         <SideNav />
         <h2 className="h2-custom-font text-[1.2rem]">Blews&apos; Stitches</h2>
-        <User />
+        {!isMounted ? (
+          <div>Loading</div>
+        ) : user?.isLoggedIn ? (
+          <div className="flex text-darkRose1 rounded-full bg-yellow-200">
+            <p>{user.firstName?.charAt(0)}</p>
+            <p>{user.surname?.charAt(0)}</p>
+            {userOpen && <User />}
+          </div>
+        ) : (
+          <Button className="px-1.5 font-semibold">Sign up</Button>
+        )}
       </nav>
       <nav
         className={`hidden md:flex h-16 px-4 fixed w-full z-50 shadow-md items-center justify-between  ${
