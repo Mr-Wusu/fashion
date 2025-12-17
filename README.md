@@ -30,3 +30,5 @@ Admin gets to:
 - Add feature for receiving cloth suggestions from users.
 - Make the navigation ui adapt to mobile screens.
 - Also work on the editing feature on clothes for admin account.
+- Write code for other pages like contact-us and orders.
+- Correct UI with feedback such that if a user isnt signed such shouldnt be able to add to cart.
