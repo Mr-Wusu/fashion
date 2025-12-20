@@ -8,6 +8,10 @@ import {
   TiTimes,
 } from "react-icons/ti";
 import { GiThink } from "react-icons/gi";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "@/state/user/userSlice";
+import { Button } from "../Miscellaneous/Button";
 
 // Define the props interface to match useUser() return type
 interface ProfileOpenProps {
@@ -28,13 +32,27 @@ export default function ProfileOpen({
   btn,
   nameFont,
 }: ProfileOpenProps) {
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const dispatch = useDispatch();
+
   function toggleModal(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
     setIsProfileOpen(false);
   }
 
+  function handleSignout() {
+    setIsSigningOut(true);
+    setTimeout(() => {
+      dispatch(logout());
+      setIsSigningOut(false);
+    }, 2000);
+  }
+
   return (
-    <div className="w-fit absolute right-3 mt-5 bg-white shadow-lg rounded-[.5rem] p-4 z-50 flex flex-col items-start gap-3 profile-open">
+    <div
+      className="w-fit absolute right-3 mt-5 bg-white shadow-lg rounded-[.5rem] p-4 z-50 flex flex-col items-start gap-3 profile-open"
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+    >
       <div
         className="h-6 w-6 rounded-full bg-rose-500 absolute top-[-.795rem] right-[-.8rem] cursor-pointer grid place-content-center"
         onClick={toggleModal}
@@ -139,11 +157,12 @@ export default function ProfileOpen({
       </div>
       <div className="w-full h-[2px] bg-darkRose2" />
 
-      <div
-        className={`${btn} h-fit bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-600 hover:to-rose-300 active:scale-95 w-[100px] text-lightRose1 py-1 tracking-wide rounded self-center transition-bg duration-300 ease-in-out grid place-content-center `}
+      <Button
+        className={`${btn} h-fit bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-600 hover:to-rose-300 active:scale-95 w-fit text-lightRose1 py-1 tracking-wide rounded self-center transition-bg duration-300 ease-in-out grid place-content-center px-2 font-semibold`}
+        onClick={handleSignout}
       >
-        Sign Out
-      </div>
+        {isSigningOut ? "Signing out..." : "Sign out"}
+      </Button>
     </div>
   );
 }
