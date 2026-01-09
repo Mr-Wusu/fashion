@@ -21,8 +21,16 @@ export default function Navbar() {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const navbar = useSelector((state: RootState) => state.navbar);
+  const cart = useSelector((state: RootState) => state.cart);
   const user = useSelector((state: RootState) => state.user);
   const isMounted = useMounted();
+  
+  function addTotal(array: { unit: number }[]) {
+    return array.reduce((total, item) => total + item.unit, 0);
+  }
+  
+
+  const cartCount = addTotal(cart);
 
   useEffect(() => {
     dispatch(setHomePage(pathname === "/"));
@@ -51,9 +59,6 @@ export default function Navbar() {
     setUserOpen(!userOpen);
   }
 
-  function handleOpenUser() {
-    setUserOpen(!userOpen)
-  }
 
   return (
     <>
@@ -70,12 +75,21 @@ export default function Navbar() {
           <div>Loading</div>
         ) : user?.isLoggedIn ? (
           <div
-            className="flex text-darkRose1 rounded-full bg-yellow-200"
-            onClick={handleOpenUser}
+            className={`relative flex text-darkRose1 rounded-full bg-rose-400 h-9 w-9 items-center justify-center ${
+              navbar.isHomePage && !navbar.isScrolled
+                ? "text-lightRose2"
+                : "text-darkRose2"
+            } cursor-pointer hover:bg-rose-300 transition-colors duration-300`}
+            onClick={()=>setUserOpen(!userOpen)}
           >
+            {cartCount > 0 && (
+              <span className="h-4 w-4 rounded-full grid place-content-center bg-rose-500 text-white text-xs absolute -top-2 -right-1.5 z-50 md:hidden">
+                {cartCount}
+              </span>
+            )}
             <p className="font-semibold">{user.firstName?.charAt(0)}</p>
             <p className="font-semibold">{user.surname?.charAt(0)}</p>
-            {userOpen && <User />}
+            {userOpen && <User setUserOpen={setUserOpen} />}
           </div>
         ) : (
           <Link

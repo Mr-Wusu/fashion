@@ -32,3 +32,4 @@ Admin gets to:
 - Also work on the editing feature on clothes for admin account.
 - Write code for other pages like contact-us and orders.
 - Correct UI with feedback such that if a user isnt signed such shouldnt be able to add to cart.
+- Implement feedback to toast "sign in to add to cart", when a user not signed in tries adding to cart.
