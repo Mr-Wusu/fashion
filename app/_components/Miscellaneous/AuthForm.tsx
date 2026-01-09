@@ -33,7 +33,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   }, [formState.user, dispatch, router]);
 
-  if (isPending || !formState.user) formRef.current?.reset();
+  formRef.current?.reset();
 
   return (
     <form
