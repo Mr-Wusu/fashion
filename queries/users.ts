@@ -1,6 +1,7 @@
 import User from "@/model/user-model";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
+import connectToDB from "@/lib/mongo";
 
 interface IUser {
   firstName: string;
@@ -13,6 +14,9 @@ export async function createUser(userInput: IUser) {
   const { firstName, surname, email, password } = userInput;
 
   try {
+    // Connect to database
+    await connectToDB();
+
     // Check if user with email already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -52,6 +56,9 @@ export async function createUser(userInput: IUser) {
 
 export async function login([email, password]: [string, string]) {
   try {
+    // Connect to database
+    await connectToDB();
+
     const user = await User.findOne({ email });
     if (!user) {
       return {
@@ -67,13 +74,12 @@ export async function login([email, password]: [string, string]) {
         error: "Invalid email or password",
       };
     }
-    
+
     return {
       success: true,
       message: "Login successful",
-      user
+      user,
     };
-
   } catch (e) {
     console.error("Login error:", e);
     return {
