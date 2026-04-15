@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ReduxProvider from "@/contexts/reduxProvider";
+import  AuthProvider  from "@/contexts/authProvider";
 import Navbar from "@/app/_components/Navigation/Navbar";
 import Footer from "./_components/Footer/Footer";
-import connectToDB from "@/lib/mongo";
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -28,14 +27,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await connectToDB();
+
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>
+        <AuthProvider>
           <Navbar />
           {children}
           <Footer />
@@ -61,7 +60,7 @@ export default async function RootLayout({
               },
             }}
           />
-        </ReduxProvider>
+        </AuthProvider>
       </body>
     </html>
   );

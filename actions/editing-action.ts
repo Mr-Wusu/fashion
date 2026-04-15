@@ -15,7 +15,7 @@ interface IErrors {
 export default async function editCloth(
   clothId: string,
   prevState: { errors: IErrors },
-  formData: FormData
+  formData: FormData,
 ): Promise<{ errors: IErrors }> {
   const description = String(formData.get("description") ?? "");
   const altTag = String(formData.get("altTag") ?? "");
@@ -99,10 +99,11 @@ export default async function editCloth(
     updateData.altTag = altTag.trim();
   }
   if (price !== null && price !== "") updateData.price = Number(price);
- if (description && description.trim() !== "") {
+  if (description && description.trim() !== "") {
     updateData.description = description.trim();
-}
-  if (newImageUrl !== clothResult.cloth.imageUrl) updateData.image = newImageUrl;
+  }
+  if (newImageUrl !== clothResult.cloth.imageUrl)
+    updateData.image = newImageUrl;
 
   // Update cloth in database
   const result = await editClothDB({
@@ -122,6 +123,4 @@ export default async function editCloth(
       general: "Cloth successfully edited",
     },
   };
-
-  
 }

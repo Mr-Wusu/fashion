@@ -18,8 +18,8 @@ interface IActionState {
 }
 
 export default async function clothUpload(
-  prevState:  IActionState ,
-  formData: FormData
+  prevState: IActionState,
+  formData: FormData,
 ): Promise<IActionState> {
   const description = String(formData.get("description") ?? "");
   const altTag = String(formData.get("altTag") ?? "");
@@ -72,7 +72,7 @@ export default async function clothUpload(
   });
 
   if (result.success === true) {
-    revalidatePath("/")
+    revalidatePath("/");
     return { errors: {}, successMessage: result.message };
   } else {
     errors.general = result.error;
