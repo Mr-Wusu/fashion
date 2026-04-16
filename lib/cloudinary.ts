@@ -4,11 +4,6 @@ interface CloudinaryUploadResult {
   secure_url: string;
 }
 
-// interface UploadableImage {
-//   arrayBuffer(): Promise<ArrayBuffer>;
-//   type: string;
-// }
-
 if (!process.env.CLOUDINARY_CLOUD_NAME) {
   throw new Error("CLOUDINARY_CLOUD_NAME is not set");
 }
