@@ -1,0 +1,80 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "@/generated/prisma" // must match your path     
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstname String
+  surname   String
+  role      Role     @default(USER)
+  orders    Order[]
+  suggestions Suggestion[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+model Cloth {
+  id          String      @id @default(cuid())
+  description String
+  price       Int
+  imageUrl    String
+  altTag      String
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("clothes")
+}
+
+// Join table between Order and Cloth
+model OrderItem {
+  id       String @id @default(cuid())
+  orderId  String
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  clothId  String
+  cloth    Cloth  @relation(fields: [clothId], references: [id], onDelete: Cascade)
+  quantity Int // How many of this cloth in the order
+  priceAtPurchase Int
+
+  @@index([orderId])
+  @@index([clothId])
+  @@map("order_items")
+}
+
+model Suggestion {
+  id String @id @default(cuid())
+  imageUrl String
+  desciption String
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("suggestions")
+}
+
+enum Role {
+  ADMIN
+  TEST_ADMIN
+  USER
+}
