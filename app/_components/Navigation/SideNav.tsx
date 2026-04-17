@@ -1,14 +1,18 @@
 "use client";
+import apiClient from "@/lib/apiClient";
+import { Role } from "@/types";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiOutlineMenu } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
-import {useSelector} from "react-redux"
-import {RootState} from "@/state/store"
 
 export default function SideNav() {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useSelector((state:RootState)=>state.user)
+  const [user, setUser] = useState<{ role: Role } | null>(null);
+
+  useEffect(() => {
+    apiClient.getCurrentUser().then(setUser);
+  }, []);
 
   function toggleSideNav() {
     setIsOpen(!isOpen);
@@ -52,7 +56,7 @@ export default function SideNav() {
               >
                 <Link href="/contact-us">Contact Us</Link>
               </li>
-              {user.isLoggedIn && !user.isAdmin && (
+              {user && user.role === Role.USER && (
                 <li
                   onClick={toggleSideNav}
                   className="hover:scale-110 transition-all duration-200 ease-out"

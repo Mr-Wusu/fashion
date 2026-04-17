@@ -9,18 +9,20 @@ import {
 } from "react-icons/ti";
 import { GiThink } from "react-icons/gi";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { logout } from "@/state/user/userSlice";
+
+
 import { Button } from "../Miscellaneous/Button";
+import apiClient from "@/lib/apiClient";
+import { Role } from "@/types";
 
 // Define the props interface to match useUser() return type
 interface ProfileOpenProps {
   setIsProfileOpen: React.Dispatch<React.SetStateAction<boolean>>;
   user: {
-    firstName?: string;
+    firstname?: string;
     surname?: string;
     email?: string;
-    isAdmin: boolean;
+    role: "ADMIN" | "TEST_ADMIN" | "USER";
   };
   btn: string;
   nameFont: string;
@@ -33,7 +35,7 @@ export default function ProfileOpen({
   nameFont,
 }: ProfileOpenProps) {
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const dispatch = useDispatch();
+
 
   function toggleModal(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
@@ -42,10 +44,8 @@ export default function ProfileOpen({
 
   function handleSignout() {
     setIsSigningOut(true);
-    setTimeout(() => {
-      dispatch(logout());
-      setIsSigningOut(false);
-    }, 2000);
+    apiClient.logout()
+    setIsSigningOut(false)
   }
 
   return (
@@ -62,9 +62,9 @@ export default function ProfileOpen({
 
       <div className="text-darkRose2 text-nowrap">
         <p className={`${nameFont} md+:text-base`}>
-          {user.firstName} {user.surname}
+          {user.firstname} {user.surname}
           <span className="text-rose-900 ml-1 text-sm">
-            {user.isAdmin ? "(Admin)" : ""}
+            {user.role !== Role.USER ? "(Admin)" : ""}
           </span>
         </p>
         <p className="text-sm">{user.email}</p>
@@ -72,7 +72,7 @@ export default function ProfileOpen({
       <div className="w-full h-[2px] bg-darkRose2" />
       <div className="">
         <ul className="flex flex-col gap-3 text-darkRose2 py-1 px-1 text-base">
-          {!user.isAdmin && (
+          {user.role === Role.USER && (
             <li className="flex items-center gap-2 hover:text-darkRose1 px-1 hover:scale-110 transition-all duration-300 rounded-[.4rem]">
               <TiShoppingCart />
               <Link
@@ -89,7 +89,7 @@ export default function ProfileOpen({
             </li>
           )}
 
-          {!user.isAdmin && (
+          {user.role === Role.USER && (
             <>
               <li className="flex items-center gap-2 hover:text-darkRose1 px-1 hover:scale-110 transition-all duration-300 rounded-[.4rem]">
                 <TiCogOutline />
@@ -107,7 +107,7 @@ export default function ProfileOpen({
               </li>
             </>
           )}
-          {user.isAdmin && (
+          {user.role !== Role.USER && (
             <>
               <li className="flex items-center gap-2 hover:text-darkRose1 px-1 hover:scale-110 transition-all duration-300 rounded-[.4rem]">
                 <TiCloudStorageOutline />
