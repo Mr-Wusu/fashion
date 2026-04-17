@@ -1,6 +1,6 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { Role } from "@/app/types";
+import { Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -14,7 +14,7 @@ export async function PATCH(
     if (!currentUser || !checkUserPermission(currentUser, Role.ADMIN)) {
       return NextResponse.json(
         {
-          error: "You are not authorized to assign teams",
+          error: "You are not authorized to change roles",
         },
         { status: 403 },
       );
@@ -33,7 +33,7 @@ export async function PATCH(
     const { role } = await request.json();
     
     // Validate role
-    const validateRoles = [Role.USER, Role.MANAGER];
+    const validateRoles = [Role.USER, Role.TEST_ADMIN];
     if (!validateRoles.includes(role)) {
       return NextResponse.json(
         {
@@ -44,16 +44,13 @@ export async function PATCH(
       );
     }
 
-    // If user has no team role should not be changed. First be in a team
+
 
     // Update team assignment
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
         role,
-      },
-      include: {
-        team: true,
       },
     });
 
