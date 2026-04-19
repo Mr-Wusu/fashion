@@ -68,7 +68,7 @@ export async function DELETE(req: NextRequest) {
         error: "You do not have such privilege to delete an order",
       });
 
-    // Check if the order exists and whether it can be deleted
+    // Check if the order exists and if it can be deleted
     const order = await prisma.order.findUnique({
       where: { id },
       select: { status: true },
@@ -87,12 +87,12 @@ export async function DELETE(req: NextRequest) {
         {
           error: "You cannot delete a pending order",
         },
-        { status: 405 },
+        { status: 409 },
       );
 
     await prisma.order.delete({ where: { id } });
 
-    return NextResponse.json({ message: "Order deleted successfully" });
+    return NextResponse.json({ message: "Order deleted successfully" }, {status: 200});
   } catch (error) {
     console.error(`Error deleting order: ${error}`)
     return NextResponse.json(

@@ -68,7 +68,7 @@ model OrderItem {
 model Suggestion {
   id String @id @default(cuid())
   imageUrl String
-  desciption String
+  description String
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@map("suggestions")

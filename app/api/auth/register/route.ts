@@ -1,4 +1,4 @@
-import { generateToken, hashPassword } from "@/lib/auth";
+import { hashPassword } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { Role } from "@/types";
 
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Generate token
-    const token = generateToken(user.id);
+    // const token = generateToken(user.id);
     const response = NextResponse.json({
       user: {
         id: user.id,
@@ -65,17 +65,16 @@ export async function POST(request: NextRequest) {
         role: user.role,
         suggestions: user.suggestions,
         orders: user.orders,
-        token,
       },
     });
 
     // Set cookie
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
-    });
+    // response.cookies.set("token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "lax",
+    //   maxAge: 60 * 60 * 24 * 7,
+    // });
 
     return response;
   } catch (error) {

@@ -1,6 +1,6 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { Role } from "@/types";
+import { Order_Status, Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
 function nextReturnError(msg: string): { error: string } {
@@ -22,7 +22,13 @@ export async function POST(req: NextRequest) {
 
     const { description, price, imageUrl, altTag } = await req.json();
 
-    if (!description || !price || !imageUrl || !altTag || typeof price !== "number")
+    if (
+      !description ||
+      !price ||
+      !imageUrl ||
+      !altTag ||
+      typeof price !== "number"
+    )
       return NextResponse.json(
         "Cloth must have a valid price, imageUrl, description and altTag",
         {
@@ -51,29 +57,85 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const {id} = await req.json()
-  // Check if there's a user and user has right to perform action
-  const user = await getCurrentuser();
-  if(!user) return NextResponse.json({
-    error: "Unauthorized!"
-  }, {
-    status: 401
-  })
+  try {
+    const { id } = await req.json();
+    // Check if there's a user and user has right to perform action
+    const user = await getCurrentuser();
+    if (!user)
+      return NextResponse.json(
+        {
+          error: "Unauthorized!",
+        },
+        {
+          status: 401,
+        },
+      );
 
-  const hasRight = checkUserPermission(user, Role.TEST_ADMIN)
-  if(!hasRight) return NextResponse.json(
-    {
-      error: "Unauthorized"
-    }, {status: 401}
-  )
+    const hasRight = checkUserPermission(user, Role.TEST_ADMIN);
+    if (!hasRight)
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        { status: 401 },
+      );
 
-  // Check if cloth has any pending or attending order, if it doesn't then proceed to delete
-  const cloth = await prisma.clothes.findUnique({
-    where: {id},
-    select: {
-      status: true
-    }
-  })
+    // Check if cloth exists
+    const cloth = await prisma.cloth.findUnique({
+      where: { id },
+    });
 
-  if(!cloth) return NextResponse
+    if (!cloth)
+      return NextResponse.json(
+        {
+          error: "Cloth not found!",
+        },
+        {
+          status: 404,
+        },
+      );
+
+    // Check if cloth has any pending or attending orders
+    const pendingOrders = await prisma.orderItem.findMany({
+      where: {
+        clothId: id,
+        order: {
+          status: {
+            not: Order_Status.FULFILLED,
+          },
+        },
+      },
+    });
+
+    if (pendingOrders.length > 0)
+      return NextResponse.json(
+        {
+          error:
+            "Deletion not allowed! This cloth's order is yet to be fulfilled",
+        },
+        {
+          status: 409,
+        },
+      );
+
+    await prisma.cloth.delete({
+      where: {
+        id,
+      },
+    });
+    return NextResponse.json(
+      {
+        message: "Cloth deleted successfully",
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error(`Deleting error: ${error}`);
+    return NextResponse.json(
+      {
+        error: "Internal server error! Something went wrong!",
+      },
+      { status: 500 },
+    );
+  }
 }
