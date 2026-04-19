@@ -25,8 +25,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const { clothId, quantity } = body;
+    const { clothId, quantity } = await req.json();
+ 
 
     if (!clothId || !quantity) {
       return NextResponse.json(

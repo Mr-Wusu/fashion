@@ -71,6 +71,20 @@ const apiClient = {
       body: JSON.stringify({ teamId }),
     });
   },
+
+  async deleteClothFromDb(clothId: string) {
+    return apiClient.request(`/api/clothes`, {
+      method: "DELETE",
+      body: JSON.stringify({id: clothId})
+    })
+  },
+
+  async updateClothInDB(clothData: unknown) {
+    return apiClient.request(`/api/clothes`, {
+      method: "PATCH",
+      body: JSON.stringify({ clothData }),
+    });
+  }
 };
 
 export default apiClient;

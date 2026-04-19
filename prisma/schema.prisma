@@ -1,7 +1,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "@/generated/prisma" // must match your path     
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -30,6 +30,7 @@ model Order {
   userId     String
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   orderItems OrderItem[]
+  status Order_Status    @default(PENDING)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 
@@ -77,4 +78,10 @@ enum Role {
   ADMIN
   TEST_ADMIN
   USER
+}
+
+enum Order_Status {
+  PENDING
+  ATTENDING
+  FULFILLED
 }

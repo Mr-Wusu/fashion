@@ -4,6 +4,12 @@ export enum Role {
   USER = "USER",
 }
 
+export enum Order_Status {
+  PENDING = "PENDING",
+  ATTENDING = "ATTENDING",
+  FULFILLED = "FULFILLED",
+}
+
 export interface User {
   id: string;
   firstname: string;
@@ -22,6 +28,7 @@ export interface Order {
   userId: string;
   orderItems: OrderItem[];
   user: User;
+  status: Order_Status;
   createdAt: Date;
   updatedAt: Date;
 }

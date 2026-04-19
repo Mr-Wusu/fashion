@@ -31,26 +31,18 @@ export async function getCurrentuser(): Promise<User | null> {
     const token = cookieStore.get("token")?.value;
 
     if (!token) return null;
-    const decode = verifyToken(token);
 
-    // Add timeout to prevent hanging database queries
-    const userFromDB = await Promise.race([
-      prisma.user.findUnique({
-        where: {
-          id: decode.userId,
-        },
-      }),
-      new Promise<null>((_, reject) =>
-        setTimeout(() => reject(new Error("Database query timeout")), 5000),
-      ),
-    ]);
+    const decoded = verifyToken(token);
+
+    const userFromDB = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+    });
 
     if (!userFromDB) return null;
 
-    const { ...user } = userFromDB;
-    return user as User;
+    return userFromDB as User;
   } catch (error) {
-    console.error("Error: ", error);
+    console.error("getCurrentuser error:", error);
     return null;
   }
 }

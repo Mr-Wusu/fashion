@@ -3,12 +3,11 @@ import { GiClothes } from "react-icons/gi";
 import Cloth from "@/app/_components/HomePage/Cloth";
 import Link from "next/link";
 import { MoonLoader } from "react-spinners";
-import { getAllClothes } from "@/queries/clothes";
+
 import clothesDummy from "@/data/clothes"
 
 export default async function Clothes() {
-  const clothes = await getAllClothes();
-
+  const clothes = []
   if (clothes === undefined)
     return (
       <div className="flex justify-center items-center h-[50vh]">

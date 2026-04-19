@@ -1,7 +1,7 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { Role } from "@/types";
-import { NextResponse } from "next/server";
+import { Order_Status, Role } from "@/types";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -42,6 +42,61 @@ export async function GET() {
       {
         error: "Internal server error! Something went wrong!",
       },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { id } = await req.json();
+    // Check if ther's a user behind the request
+    const user = await getCurrentuser();
+    if (!user)
+      return NextResponse.json(
+        {
+          error: "You are not authorized to delete a cloth!",
+        },
+        { status: 401 },
+      );
+
+    // If user exists, check if user has admin privileges
+    const hasRight = checkUserPermission(user, Role.TEST_ADMIN);
+
+    if (!hasRight)
+      return NextResponse.json({
+        error: "You do not have such privilege to delete an order",
+      });
+
+    // Check if the order exists and whether it can be deleted
+    const order = await prisma.order.findUnique({
+      where: { id },
+      select: { status: true },
+    });
+
+    if (!order)
+      return NextResponse.json(
+        {
+          error: "Order not found",
+        },
+        { status: 404 },
+      );
+
+    if (order.status !== Order_Status.FULFILLED)
+      return NextResponse.json(
+        {
+          error: "You cannot delete a pending order",
+        },
+        { status: 405 },
+      );
+
+    await prisma.order.delete({ where: { id } });
+
+    return NextResponse.json({ message: "Order deleted successfully" });
+  } catch (error) {
+    console.error(`Error deleting order: ${error}`)
+    return NextResponse.json(
+      { error: "Internal server error! Something went wrong!" },
       { status: 500 },
     );
   }
