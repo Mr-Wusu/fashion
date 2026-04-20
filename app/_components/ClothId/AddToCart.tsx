@@ -1,45 +1,66 @@
 "use client";
 import { useState } from "react";
 import { Button } from "../Miscellaneous/Button";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/state/store";
+
 // import toast, { Toast } from "react-hot-toast";
 import { MdClose, MdAdd } from "react-icons/md";
 import { FaMinus } from "react-icons/fa6";
-import { decreaseUnit, increaseUnit } from "@/state/cart/cartSlice";
-import { IClothes } from "@/types/types";
+
+import { useAuth } from "@/contexts/authProvider";
+import apiClient from "@/lib/apiClient";
+
+import { Cloth, Role } from "@/types";
 
 interface AddToCartProps {
-  cloth: IClothes;
+  cloth: Cloth;
   styles: string;
 }
 
 export default function AddToCart({ cloth, styles }: AddToCartProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
+  const { user, setUser } = useAuth();
 
-  const cart = useSelector((state: RootState) => state.cart);
+  // Find the order item for this cloth in the user's orders
+  const orderItem =
+    user?.orders
+      ?.flatMap((order) => order.orderItems)
+      .find((item) => item.cloth.id === cloth.id) || null;
 
-  const cartItem = cart.find((item) => item._id === cloth._id);
-  const count = cartItem?.unit;
+  const count = orderItem?.quantity || 0;
 
-  const increaseHandler = () => {
-    dispatch(increaseUnit({ ...cloth }));
-    console.log(cart);
-    
+  const increaseHandler = async () => {
+    if (!user) return;
+    try {
+      if (orderItem) {
+        await apiClient.changeOrderItem(orderItem.id, count + 1);
+      } else {
+        await apiClient.addOrderItem(cloth.id, 1);
+      }
+      // Refetch user to update the cart
+      const updatedUser = await apiClient.getCurrentUser();
+      setUser(updatedUser);
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      // Optionally show toast or handle error
+    }
   };
 
-  const decreaseHandler = () => {
-    if (typeof count === "number" && count >= 1) {
-      dispatch(decreaseUnit({ _id: cloth._id }));
-      console.log(cart);
+  const decreaseHandler = async () => {
+    if (!user || !orderItem || count <= 1) return;
+    try {
+      await apiClient.changeOrderItem(orderItem.id, count - 1);
+      // Refetch user to update the cart
+      const updatedUser = await apiClient.getCurrentUser();
+      setUser(updatedUser);
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      // Optionally show toast or handle error
     }
   };
 
   return (
     <>
-      {user?.isAdmin === false &&
+      {user?.role !== Role.USER &&
         (isOpen ? (
           <div className="relative bg-rose-300 rounded-[.6rem]">
             <MdClose

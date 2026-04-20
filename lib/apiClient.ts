@@ -53,16 +53,48 @@ const apiClient = {
   },
 
   // User Methods
-  async getUsers() {
-    return apiClient.request("/api/users");
+  async getClothes() {
+    return apiClient.request("/api/clothes");
   },
 
+  async addOrderItem( clothId: string, quantity: number) {
+    return apiClient.request("/api/order_items", {
+      method: "POST",
+      body: JSON.stringify({ clothId, quantity })
+    });
+  },
+
+  async changeOrderItem(orderItemId:string,quantity: number) {
+    return apiClient.request("/api/order_items", {
+      method: "PATCH",
+      body: JSON.stringify({ orderItemId, quantity }),
+    });
+  },
+
+  async suggest(userData: unknown) {
+    return apiClient.request("/api/suggestions", {
+      method: "POST",
+      body: JSON.stringify(userData),
+    });
+  },
   // Admin Methods
   async updateUserRole(userId: string, role: string) {
     return apiClient.request(`/api/users/${userId}/role`, {
       method: "PATCH",
       body: JSON.stringify({ role }),
     });
+  },
+
+  async getSuggestions() {
+    return apiClient.request("/api/suggestions");
+  },
+
+  async getUsers() {
+    return apiClient.request("/api/users");
+  },
+
+  async getOrders() {
+    return apiClient.request("/api/orders");
   },
 
   async assignUserToTeam(userId: string, teamId: string | null) {
@@ -75,8 +107,8 @@ const apiClient = {
   async deleteClothFromDb(clothId: string) {
     return apiClient.request(`/api/clothes`, {
       method: "DELETE",
-      body: JSON.stringify({id: clothId})
-    })
+      body: JSON.stringify({ id: clothId }),
+    });
   },
 
   async updateClothInDB(clothData: unknown) {
@@ -84,7 +116,7 @@ const apiClient = {
       method: "PATCH",
       body: JSON.stringify({ clothData }),
     });
-  }
+  },
 };
 
 export default apiClient;

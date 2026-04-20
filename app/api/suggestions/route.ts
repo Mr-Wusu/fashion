@@ -43,3 +43,36 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { id } = await req.json();
+    // Verify user is logged in and has rights
+    const user = await getCurrentuser();
+    if (!user)
+      return NextResponse.json(
+        {
+          error: "You are not authorized to perform this operation",
+        },
+        { status: 401 },
+      );
+    const hasRight = checkUserPermission(user, Role.TEST_ADMIN);
+    if (!hasRight)
+      return NextResponse.json(
+        {
+          error: "You are not authorized to perform this operation",
+        },
+        { status: 409 },
+      );
+    // Check if suggestion exists, if it does delete it
+    await prisma.suggestion.delete({
+      where: { id },
+    });
+    return NextResponse.json({ message: "Suggestion deleted successfully!" }, {status: 200});
+  } catch (error) {
+    console.error(`Deletion error: ${error}`)
+    return NextResponse.json({
+      error: "Internal server error. Something went wrong!"
+    })    
+  }
+}

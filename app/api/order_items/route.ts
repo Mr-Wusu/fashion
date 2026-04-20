@@ -1,6 +1,6 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { Role } from "@/types";
+import { Order_Status, Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
 // POST /api/order_items — Add an item, auto-creating an order if none exists
@@ -15,10 +15,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const isAdmin = checkUserPermission(user, Role.ADMIN);
-    const isTestAdmin = checkUserPermission(user, Role.TEST_ADMIN);
+    const isAdmin = checkUserPermission(user, Role.TEST_ADMIN);   
 
-    if (isAdmin || isTestAdmin) {
+    if (isAdmin) {
       return NextResponse.json(
         { error: "Admins are not permitted to place order items." },
         { status: 403 },
@@ -55,7 +54,10 @@ export async function POST(req: NextRequest) {
 
     // Find the user's existing order or create one on the fly
     let order = await prisma.order.findFirst({
-      where: { userId: user.id },
+      where: {
+        userId: user.id,
+        status: Order_Status.PENDING, // only reuse active/pending orders
+      },
       orderBy: { createdAt: "desc" },
     });
 
@@ -96,18 +98,16 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const isAdmin = checkUserPermission(user, Role.ADMIN);
-    const isTestAdmin = checkUserPermission(user, Role.TEST_ADMIN);
+    const isAdmin = checkUserPermission(user, Role.TEST_ADMIN);
 
-    if (isAdmin || isTestAdmin) {
+    if (isAdmin) {
       return NextResponse.json(
         { error: "Admins are not permitted to modify order items." },
         { status: 403 },
       );
     }
 
-    const body = await req.json();
-    const { orderItemId, quantity } = body;
+    const { orderItemId, quantity } = await req.json();
 
     if (!orderItemId || !quantity) {
       return NextResponse.json(

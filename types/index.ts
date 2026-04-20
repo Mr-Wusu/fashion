@@ -19,15 +19,13 @@ export interface User {
   role: Role;
   orders?: Order[];
   suggestions?: Suggestion[];
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface Order {
   id: string;
   userId: string;
   orderItems: OrderItem[];
-  user: User;
+  user?: User;
   status: Order_Status;
   createdAt: Date;
   updatedAt: Date;
@@ -39,8 +37,6 @@ export interface Cloth {
   price: number;
   imageUrl: string;
   altTag: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface OrderItem {
