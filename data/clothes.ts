@@ -1,6 +1,6 @@
 const clothes = [
   {
-    _id: "1",
+    id: "1",
     imageUrl: "/images/clothings/cloth-1.jpg",
     altTag: "Silky sleek Agbada",
     description:
@@ -8,7 +8,7 @@ const clothes = [
     price: 10000,
   },
   {
-    _id: "2",
+    id: "2",
     imageUrl: "/images/clothings/cloth-2.jpg",
     altTag: "Classy semi-formal calm Short-sleeve",
     description:
@@ -16,7 +16,7 @@ const clothes = [
     price: 10000,
   },
   {
-    _id: "3",
+    id: "3",
     imageUrl: "/images/clothings/cloth-3.jpg",
     altTag: "An array or tray of Stylish Caps",
     description:
@@ -24,7 +24,7 @@ const clothes = [
     price: 10000,
   },
   {
-    _id: "4",
+    id: "4",
     imageUrl: "/images/clothings/cloth-4.jpg",
     altTag: "Stock jeans and Jack Bauer Jacket",
     description:
@@ -32,7 +32,7 @@ const clothes = [
     price: 10000,
   },
   {
-    _id: "5",
+    id: "5",
     imageUrl: "/images/clothings/cloth-5.jpg",
     altTag: "Classic Suit",
     description:
@@ -40,7 +40,7 @@ const clothes = [
     price: 10000,
   },
   {
-    _id: "6",
+    id: "6",
     imageUrl: "/images/clothings/cloth-6.jpg",
     altTag: "Odogwu or Cultist",
     description:
@@ -120,6 +120,5 @@ export const clothesDataConvex = [
     image: "Sky blue agbada",
   },
 ];
-
 
 export default clothes;

@@ -1,6 +1,6 @@
 "use server";
 
-import { createUser } from "@/queries/users";
+import apiClient from "@/lib/apiClient";
 import { redirect } from "next/navigation";
 
 interface Errors {
@@ -19,7 +19,7 @@ export default async function signup(
   prevState: { errors: Errors; user?: User },
   formData: FormData
 ): Promise<{ errors: Errors; user?: User; }> {
-  const firstName = String(formData.get("firstname") ?? "");
+  const firstname = String(formData.get("firstname") ?? "");
   const surname = String(formData.get("surname") ?? "");
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
@@ -27,15 +27,15 @@ export default async function signup(
   const errors: Errors = {};
 
   // Validate all fields first
-  if (!firstName || !surname) {
+  if (!firstname || !surname) {
     errors.general = "All fields are required";
   }
 
-  if (firstName.length < 2 || surname.length < 2) {
+  if (firstname.length < 2 || surname.length < 2) {
     errors.general = "Names must be at least 2 letters";
   }
 
-  if (firstName.length === 0 || surname.length === 0) {
+  if (firstname.length === 0 || surname.length === 0) {
     errors.general =
       "The firstname and surname fields aren't for nothing. Use them";
   }
@@ -54,8 +54,8 @@ export default async function signup(
   }
 
   // Only proceed with user creation if validation passes
-  const result = await createUser({
-    firstName,
+  const result = await apiClient.register({
+    firstname,
     surname,
     email,
     password,

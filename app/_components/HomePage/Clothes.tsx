@@ -5,9 +5,12 @@ import Link from "next/link";
 import { MoonLoader } from "react-spinners";
 
 import clothesDummy from "@/data/clothes"
+import apiClient from "@/lib/apiClient";
 
 export default async function Clothes() {
-  const clothes = []
+  const clothes = await apiClient.getClothes()
+
+
   if (clothes === undefined)
     return (
       <div className="flex justify-center items-center h-[50vh]">
@@ -15,6 +18,7 @@ export default async function Clothes() {
       </div>
     );
 
+    
 
   return (
     <section className="flex flex-col gap-6 bg-lightRose1 px-6 pt-11 pb-9 ">
@@ -28,9 +32,9 @@ export default async function Clothes() {
         className={`grid place-items-center gap-12 md:grid-cols-2 md:gap-x-0 md:w-[45rem] lg:grid-cols-3 lg:w-full mx-auto`}
       >
         {clothes?.length === 0 ? clothesDummy.map((cloth) => (
-          <Cloth key={cloth._id} cloth={cloth} />
+          <Cloth key={cloth.id} cloth={cloth} />
         )): clothes.map((cloth) => (
-          <Cloth key={cloth._id} cloth={cloth} />
+          <Cloth key={cloth.id} cloth={cloth} />
         ))}
         
         

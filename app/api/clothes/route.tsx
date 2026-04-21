@@ -10,6 +10,22 @@ function nextReturnError(msg: string): { error: string } {
 const errMsg1 = "You are not authenticated";
 const errMsg2 = "You do not have the right to add cloth";
 
+export async function GET() {
+  try {
+    const clothes = await prisma.cloth.findMany({
+      orderBy: { createdAt: "desc" }, // or however you want them sorted
+    });
+
+    return NextResponse.json({ clothes }, { status: 200 });
+  } catch (error) {
+    console.error(`Error fetching clothes: ${error}`);
+    return NextResponse.json(
+      { error: "Internal server error! Something went wrong!" },
+      { status: 500 },
+    );
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const user = await getCurrentuser();

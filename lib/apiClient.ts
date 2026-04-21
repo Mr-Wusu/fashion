@@ -1,3 +1,5 @@
+import { Cloth } from "@/types";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 const apiClient = {
@@ -53,18 +55,19 @@ const apiClient = {
   },
 
   // User Methods
-  async getClothes() {
-    return apiClient.request("/api/clothes");
+  async getClothes(): Promise<Cloth[]> {
+    const data = await apiClient.request("/api/clothes");
+    return data?.clothes ?? []; // ← unwrap here
   },
 
-  async addOrderItem( clothId: string, quantity: number) {
+  async addOrderItem(clothId: string, quantity: number) {
     return apiClient.request("/api/order_items", {
       method: "POST",
-      body: JSON.stringify({ clothId, quantity })
+      body: JSON.stringify({ clothId, quantity }),
     });
   },
 
-  async changeOrderItem(orderItemId:string,quantity: number) {
+  async changeOrderItem(orderItemId: string, quantity: number) {
     return apiClient.request("/api/order_items", {
       method: "PATCH",
       body: JSON.stringify({ orderItemId, quantity }),
@@ -101,6 +104,13 @@ const apiClient = {
     return apiClient.request(`/api/users/${userId}/team`, {
       method: "PATCH",
       body: JSON.stringify({ teamId }),
+    });
+  },
+
+  async storeCloth(clothData: unknown) {
+    return apiClient.request(`/api/clothes`, {
+      method: "POST",
+      body: JSON.stringify(clothData),
     });
   },
 

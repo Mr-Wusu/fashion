@@ -1,29 +1,21 @@
 "use client";
 import Image from "next/image";
-
-import { useSelector } from "react-redux";
-import { RootState } from "@/state/store";
-import { IUser } from "@/types/types";
 import AdminClothEffect from "./AdminClothEffect";
 import Link from "next/link";
 import { useState } from "react";
 import EditingForm from "./EditingForm";
 import ConfirmDelete from "./ConfirmDelete";
 import AddToCart from "../ClothId/AddToCart";
+import { useAuth } from "@/contexts/authProvider";
+import { Role, Cloth as ICloth } from "@/types";
 
-interface ICloth {
-  _id: string;
-  imageUrl: string;
-  altTag: string;
-  price: number;
-  description: string;
-}
+
 
 export default function Cloth({ cloth }: { cloth: ICloth }) {
   const [isEditing, setIsEditing] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
 
-  const user = useSelector((state: RootState) => state.user) as IUser;
+  const { user } = useAuth();
   const buttonStyle =
     "bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-400 hover:to-rose-700 transition-all duration-700 py-1.5 px-2 rounded-[.27rem] text-lightRose2 tracking-wider";
 
@@ -35,7 +27,7 @@ export default function Cloth({ cloth }: { cloth: ICloth }) {
       {isEditing && <EditingForm setIsEditing={setIsEditing} />}
 
       <div className="relative h-[14.6rem] overflow-hidden w-full ">
-        {user.isAdmin && (
+        {user?.role !== Role.USER && (
           <AdminClothEffect
             setIsEditing={setIsEditing}
             setOpenConfirmDelete={setOpenConfirmDelete}
@@ -53,18 +45,17 @@ export default function Cloth({ cloth }: { cloth: ICloth }) {
         <p className="px-3">{cloth.description}</p>
         <div
           className={`mt-4 mb-1.5 px-3 ${
-            user.isAdmin ? "flex justify-center " : "flex justify-between"
+            user?.role !== Role.USER
+              ? "flex justify-center "
+              : "flex justify-between"
           }`}
         >
-          <AddToCart
-            cloth={cloth}
-            styles="px-2 py-1.5 w-[6.5rem]"
-          />
+          <AddToCart cloth={cloth} styles="px-2 py-1.5 w-[6.5rem]" />
           <Link
             className={`${buttonStyle} ${
-              user.isAdmin ? "w-3/4 grid place-content-center" : ""
+              user?.role !== Role.USER ? "w-3/4 grid place-content-center" : ""
             } `}
-            href={`/clothes/${cloth._id}`}
+            href={`/clothes/${cloth.id}`}
           >
             See details
           </Link>

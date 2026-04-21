@@ -60,13 +60,6 @@ export interface AuthContextType {
   hasPermission: (requiredRole: Role) => boolean;
 }
 
-export interface ICloth {
-  altTag: string;
-  price: number;
-  description: string;
-  image: string;
-}
-
 export interface IEditCloth {
   clothId: string;
   altTag?: string;

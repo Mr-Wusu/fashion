@@ -3,15 +3,16 @@
 import { useRef, useState } from "react";
 import toast, { Toast, Toaster } from "react-hot-toast";
 import { PulseLoader } from "react-spinners";
-import { useSelector } from "react-redux";
+
 
 import { MdClose } from "react-icons/md";
-import { RootState } from "@/state/store";
+import { useAuth } from "@/contexts/authProvider";
+
 
 export default function FooterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const user = useSelector((state: RootState) => state.user);
+  const {user} = useAuth()
 
   function showToastWithCloseButton(message: string) {
     toast.custom((t: Toast) => (
@@ -40,7 +41,7 @@ export default function FooterForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (user.isLoggedIn === false) {
+    if (!user) {
       showToastWithCloseButton("Sign in to send us a design");
       return;
     }

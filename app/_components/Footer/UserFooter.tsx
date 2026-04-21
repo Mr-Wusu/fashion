@@ -1,13 +1,14 @@
 "use client";
-import { useSelector } from "react-redux";
+import { useAuth } from "@/contexts/authProvider";
 import FooterForm from "./FooterForm";
-import { RootState } from "@/state/store";
+import { Role } from "@/types";
+
 
 const UserFooter = () => {
-  const user = useSelector((state: RootState) => state.user);
+  const {user} = useAuth()
 
-  if (user.isAdmin) return null;
-  if (!user.isAdmin)
+  if (user?.role !== Role.USER) return null;
+  if (user?.role === Role.USER)
     return (
       <div className="flex flex-col gap-3 items-center" id="user-footer">
         <div className="flex flex-col gap-2">

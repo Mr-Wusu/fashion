@@ -3,11 +3,12 @@ import signup from "@/actions/signup-action";
 import signin from "@/actions/signin-action";
 import Link from "next/link";
 import { useActionState, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { login } from "@/state/user/userSlice";
+
+
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "./Button";
+
 
 type AuthFormProps = {
   mode: "sign-in" | "sign-up";
@@ -20,18 +21,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
     errors: {},
     user: undefined,
   });
-  const dispatch = useDispatch();
   const router = useRouter();
   console.log(formState.user?.firstName);
 
   useEffect(() => {
     if (formState.user) {
-      // Dispatch login action with user data
-      dispatch(login(formState.user));
       // Redirect to the homepage after successful login
       router.push("/");
     }
-  }, [formState.user, dispatch, router]);
+  }, [formState.user, router]);
 
   formRef.current?.reset();
 

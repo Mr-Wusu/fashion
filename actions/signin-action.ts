@@ -1,5 +1,5 @@
 "use server";
-import { login as authenticateUser } from "@/queries/users";
+import apiClient from "@/lib/apiClient";
 // import { revalidatePath } from "next/cache";
 // import { redirect } from "next/navigation";
 
@@ -17,7 +17,7 @@ interface User {
 
 export default async function signin(
   prevState: { errors: Errors; user?: User },
-  formData: FormData
+  formData: FormData,
 ): Promise<{ errors: Errors; user?: User }> {
   const enteredEmail = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
@@ -31,14 +31,8 @@ export default async function signin(
     return { errors };
   }
 
-  const result = await authenticateUser([enteredEmail, password]);
-    if (!result.success || !result.user) {
-      errors.general = result.error || "Login failed. Please try again.";
-      return { errors };
-    }
-
+  const result = await apiClient.login(enteredEmail, password);
   const { firstName, surname, email } = result.user;
-
 
   return { errors, user: { firstName, surname, email } };
 }

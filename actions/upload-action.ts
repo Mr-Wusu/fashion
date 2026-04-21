@@ -1,6 +1,6 @@
 "use server";
 
-import { storeCloth } from "@/queries/clothes";
+import apiClient from "@/lib/apiClient";
 import { uploadImage } from "@/lib/cloudinary";
 import { revalidatePath } from "next/cache";
 
@@ -64,7 +64,7 @@ export default async function clothUpload(
   }
   console.log("You reached me at the upload action after image upload");
   // Store cloth details including cloudinary string in mondodb
-  const result = await storeCloth({
+  const result = await apiClient.storeCloth({
     image: imageUrl,
     description,
     price: numericPrice,
