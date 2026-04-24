@@ -1,7 +1,6 @@
 "use server";
 import apiClient from "@/lib/apiClient";
-// import { revalidatePath } from "next/cache";
-// import { redirect } from "next/navigation";
+import { Role } from "@/types";
 
 interface Errors {
   email?: string;
@@ -10,9 +9,10 @@ interface Errors {
 }
 
 interface User {
-  firstName: string;
+  firstname: string;
   surname: string;
   email: string;
+  role: Role;
 }
 
 export default async function signin(
@@ -30,9 +30,12 @@ export default async function signin(
   if (Object.keys(errors).length > 0) {
     return { errors };
   }
-
-  const result = await apiClient.login(enteredEmail, password);
-  const { firstName, surname, email } = result.user;
-
-  return { errors, user: { firstName, surname, email } };
+  try {
+    const result = await apiClient.login(enteredEmail, password);
+    const { firstname, surname, email, role } = result.user;
+    return { errors, user: { firstname, surname, email, role } };
+  } catch (error) {
+    console.error(`Signin error: ${error}`)
+    return {errors, user: undefined}
+  }  
 }

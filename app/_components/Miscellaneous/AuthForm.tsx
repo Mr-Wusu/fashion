@@ -3,12 +3,11 @@ import signup from "@/actions/signup-action";
 import signin from "@/actions/signin-action";
 import Link from "next/link";
 import { useActionState, useRef } from "react";
-
+import { useAuth } from "@/contexts/authProvider";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "./Button";
-
 
 type AuthFormProps = {
   mode: "sign-in" | "sign-up";
@@ -21,15 +20,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
     errors: {},
     user: undefined,
   });
+  const { setUser } = useAuth();
   const router = useRouter();
   console.log(formState.user?.firstName);
 
   useEffect(() => {
     if (formState.user) {
+      setUser(formState.user);
       // Redirect to the homepage after successful login
       router.push("/");
     }
-  }, [formState.user, router]);
+  }, [formState.user, router, setUser]);
 
   formRef.current?.reset();
 
@@ -86,7 +87,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       {formState.errors && Object.keys(formState.errors).length > 0 && (
         <ul className="text-rose-500 w-80">
           {Object.entries(formState.errors).map(
-            ([field, error]) => error && <li key={field}>{error}</li>
+            ([field, error]) => error && <li key={field}>{error}</li>,
           )}
         </ul>
       )}
@@ -100,8 +101,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
             ? "Creating account..."
             : "Signing in..."
           : mode === "sign-up"
-          ? "Sign up"
-          : "Sign in"}
+            ? "Sign up"
+            : "Sign in"}
       </Button>
       <p className="mx-auto">
         {mode === "sign-up" ? "Already signed up?" : "Don't have an account?"}{" "}

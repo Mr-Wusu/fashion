@@ -65,7 +65,7 @@ export default async function clothUpload(
   console.log("You reached me at the upload action after image upload");
   // Store cloth details including cloudinary string in mondodb
   const result = await apiClient.storeCloth({
-    image: imageUrl,
+    imageUrl,
     description,
     price: numericPrice,
     altTag,
