@@ -4,6 +4,7 @@ export enum Role {
   USER = "USER",
 }
 
+
 export enum Order_Status {
   PENDING = "PENDING",
   ATTENDING = "ATTENDING",
@@ -16,6 +17,15 @@ export interface User {
   surname: string;
   email: string;
   password: string;
+  role: Role;
+  orders?: Order[];
+  suggestions?: Suggestion[];
+}
+
+export interface AuthUser {
+  firstname: string;
+  surname: string;
+  email: string;
   role: Role;
   orders?: Order[];
   suggestions?: Suggestion[];
@@ -54,7 +64,7 @@ export interface Suggestion {
 }
 
 export interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   login: (formData: FormData) => void;
   logout: () => void;
   hasPermission: (requiredRole: Role) => boolean;

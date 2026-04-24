@@ -1,12 +1,14 @@
+import { AuthUser, Order, Role, Suggestion } from "@/types";
+
 export function isValidName(firstname: string, lastname: string): boolean {
-   const ok = (s: string) => {
-     if (s.length < 2) return false;
-     // letters and hyphens only
-     if (!/^[A-Za-z-]+$/.test(s)) return false;
-     // no leading/trailing hyphen, no double hyphen
-     if (s.startsWith("-") || s.endsWith("-") || s.includes("--")) return false;
-     return true;
-   };
+  const ok = (s: string) => {
+    if (s.length < 2) return false;
+    // letters and hyphens only
+    if (!/^[A-Za-z-]+$/.test(s)) return false;
+    // no leading/trailing hyphen, no double hyphen
+    if (s.startsWith("-") || s.endsWith("-") || s.includes("--")) return false;
+    return true;
+  };
   return ok(firstname) && ok(lastname);
 }
 
@@ -36,4 +38,16 @@ export function isValidPassword(password: string): boolean {
   const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
 
   return hasLength && hasNumber && hasSpecial;
+}
+
+export function toAuthUser(user: {
+  firstname: string;
+  surname: string;
+  email: string;
+  role: Role;
+  orders?: Order[];
+  suggestions?: Suggestion[];
+}): AuthUser {
+  const { firstname, surname, email, role, orders, suggestions } = user;
+  return { firstname, surname, email, role, orders, suggestions };
 }

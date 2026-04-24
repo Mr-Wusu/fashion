@@ -7,7 +7,7 @@ import { Role, User } from "@/types/index";
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 12);
+  return bcrypt.hash(password, 10);
 }
 
 export async function verifyPassword(

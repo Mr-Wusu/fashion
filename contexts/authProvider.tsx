@@ -3,21 +3,23 @@
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import apiClient from "@/lib/apiClient";
-import { User } from "@/types/index";
-import { AuthContext } from "@/contexts/authContext"; // 👈 import from separate file
+import { AuthUser } from "@/types/index";
+import { AuthContext } from "@/contexts/authContext"; 
+import { toAuthUser } from "@/lib/helperFunctions";
 
 export default function AuthProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
 
   useEffect(() => {
     apiClient
       .getCurrentUser()
+      .then(toAuthUser) // map full User → AuthUser
       .then(setUser)
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false));
@@ -27,6 +29,7 @@ export default function AuthProvider({
     if (!pathname.startsWith("/dashboard")) return;
     apiClient
       .getCurrentUser()
+      .then(toAuthUser) // map full User → AuthUser
       .then(setUser)
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false));

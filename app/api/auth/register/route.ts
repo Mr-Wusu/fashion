@@ -1,6 +1,4 @@
-import { hashPassword } from "@/lib/auth";
-import { prisma } from "@/lib/db";
-import { Role } from "@/types";
+import { registerUser } from "@/lib/authService";
 
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,71 +14,12 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
 
-    // Find existing user
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (existingUser)
-      return NextResponse.json(
-        {
-          error: "Email already taken!",
-        },
-        { status: 409 },
-      );
-
-
-    // If there's existing user with provided email, hash the provided password
-    const hashedPassword = await hashPassword(password);
-
-    // First User becomes ADMIN, others become USER
-    const userCount = await prisma.user.count();
-    const role = userCount === 0 ? Role.ADMIN : Role.USER;
-
-    // Create User
-    const user = await prisma.user.create({
-      data: {
-        firstname,
-        surname,
-        email,
-        password: hashedPassword,
-        role,
-      },
-      include: {
-        suggestions: true,
-        orders: true,
-      },
-    });
-
-    // Generate token
-    // const token = generateToken(user.id);
-    const response = NextResponse.json({
-      user: {
-        id: user.id,
-        firstname: user.firstname,
-        surname: user.surname,
-        email: user.email,
-        role: user.role,
-        suggestions: user.suggestions,
-        orders: user.orders,
-      },
-    });
-
-    // Set cookie
-    // response.cookies.set("token", token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "lax",
-    //   maxAge: 60 * 60 * 24 * 7,
-    // });
-
-    return response;
+    const user = await registerUser({ firstname, surname, email, password });
+    return NextResponse.json({ user });
   } catch (error) {
-    console.error("Registeration error", error);
-    return NextResponse.json({
-      message: `Internal server error, something went wrong!`,
-    });
+    const message =
+      error instanceof Error ? error.message : "Something went wrong";
+    const status = message === "Email already taken!" ? 409 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }

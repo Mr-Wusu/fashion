@@ -1,12 +1,10 @@
-import { generateToken, verifyPassword } from "@/lib/auth";
-import { prisma } from "@/lib/db";
-
+import { loginUser } from "@/lib/authService";
 
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const {email, password} = await request.json();
+    const { email, password } = await request.json();
     // Validate user details
     if (!email || !password)
       return NextResponse.json(
@@ -16,49 +14,12 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
 
-    // Find existing user
-    const userFromDB = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-      include: {
-        orders: true,
-        suggestions: true
-      }
-    });
+    const { user } = await loginUser({ email, password });
 
-    if (!userFromDB)
-      return NextResponse.json(
-        {
-          error: "Invalid credentials",
-        },
-        { status: 401 },
-      );    
-
-    const isCorrectPassword = await verifyPassword(
-      password,
-      userFromDB.password,
-    );
-    if(!isCorrectPassword) return NextResponse.json({
-      error: "Invalid credentials"
-    }, {status: 401})
-  
-
-    // Generate token
-    const token = generateToken(userFromDB.id);
-    const response = NextResponse.json({
-      user: {
-        id: userFromDB.id,
-        firstname: userFromDB.firstname,
-        surname: userFromDB.surname,
-        email: userFromDB.email,
-        role: userFromDB.role,
-        token,
-      },
-    });
+    const response = NextResponse.json({ user });
 
     // Set cookie
-    response.cookies.set("token", token, {
+    response.cookies.set("token", user.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

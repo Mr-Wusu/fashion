@@ -22,7 +22,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   });
   const { setUser } = useAuth();
   const router = useRouter();
-  console.log(formState.user?.firstName);
+  console.log(formState.user?.firstname, formState.errors);
 
   useEffect(() => {
     if (formState.user) {

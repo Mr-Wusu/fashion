@@ -1,6 +1,8 @@
 "use server";
 
-import apiClient from "@/lib/apiClient";
+import { registerUser } from "@/lib/authService";
+import { AuthUser } from "@/types";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 interface Errors {
@@ -9,16 +11,10 @@ interface Errors {
   general?: string;
 }
 
-interface User {
-  firstName: string;
-  surname: string;
-  email: string;
-}
-
 export default async function signup(
-  prevState: { errors: Errors; user?: User },
-  formData: FormData
-): Promise<{ errors: Errors; user?: User; }> {
+  prevState: { errors: Errors; user?: AuthUser },
+  formData: FormData,
+): Promise<{ errors: Errors; user?: AuthUser }> {
   const firstname = String(formData.get("firstname") ?? "");
   const surname = String(formData.get("surname") ?? "");
   const email = String(formData.get("email") ?? "");
@@ -54,19 +50,14 @@ export default async function signup(
   }
 
   // Only proceed with user creation if validation passes
-  const result = await apiClient.register({
-    firstname,
-    surname,
-    email,
-    password,
-  });
-
-  if (result.success === true) {
+  try {
+    await registerUser({ firstname, surname, email, password });
     redirect("/auth/sign-in");
-  } else {
-    // Show the specific error message from createUser
-    errors.general =
-      result.error || "Failed to create account. Please try again.";
-    return { errors };
+  } catch (error: unknown) {
+    if (isRedirectError(error)) throw error; 
+    const message =
+      error instanceof Error ? error.message : "Failed to create account.";
+    errors.general = message;
   }
+  return { errors };
 }

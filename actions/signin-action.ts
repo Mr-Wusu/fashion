@@ -1,6 +1,7 @@
 "use server";
-import apiClient from "@/lib/apiClient";
-import { Role } from "@/types";
+
+import { loginUser } from "@/lib/authService"; 
+import { AuthUser, Role } from "@/types";
 
 interface Errors {
   email?: string;
@@ -8,34 +9,40 @@ interface Errors {
   general?: string;
 }
 
-interface User {
-  firstname: string;
-  surname: string;
-  email: string;
-  role: Role;
-}
-
 export default async function signin(
-  prevState: { errors: Errors; user?: User },
+  prevState: { errors: Errors; user?: AuthUser },
   formData: FormData,
-): Promise<{ errors: Errors; user?: User }> {
-  const enteredEmail = String(formData.get("email") ?? "");
+): Promise<{ errors: Errors; user?: AuthUser }> {
+  const email = String(formData.get("email") ?? ""); 
   const password = String(formData.get("password") ?? "");
 
   const errors: Errors = {};
-  if (!enteredEmail.includes("@")) {
+
+  if (!email.includes("@")) {
     errors.email = "Please enter a valid email address.";
   }
 
-  if (Object.keys(errors).length > 0) {
-    return { errors };
-  }
+  if (Object.keys(errors).length > 0) return { errors };
+
   try {
-    const result = await apiClient.login(enteredEmail, password);
-    const { firstname, surname, email, role } = result.user;
-    return { errors, user: { firstname, surname, email, role } };
-  } catch (error) {
-    console.error(`Signin error: ${error}`)
-    return {errors, user: undefined}
-  }  
+    const { user } = await loginUser({ email, password });
+
+    return {
+      errors,
+      user: {
+        firstname: user.firstname,
+        surname: user.surname,
+        email: user.email,
+        role: user.role as Role,
+      },
+    };
+  } catch (error: unknown) {
+    console.error(`Signin error: ${error}`);
+    const message =
+      error instanceof Error ? error.message : "Login failed. Try again.";
+    return {
+      errors: { general: message },
+      user: undefined,
+    };
+  }
 }

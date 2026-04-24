@@ -1,6 +1,6 @@
 "use client";
 
-import {  useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
 import { Button } from "@/app/_components/Miscellaneous/Button";
@@ -12,21 +12,45 @@ import User from "@/app/_components/Navigation/User";
 import apiClient from "@/lib/apiClient";
 import { useAuth } from "@/contexts/authProvider";
 import { Role } from "@/types";
+import { useRouter } from "next/navigation";
 
-interface NavbarClientProps  {
+interface NavbarClientProps {
   navLinks: React.ReactNode; // accept server component as a prop
 }
 
 export default function Navbar({ navLinks }: NavbarClientProps) {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
+  const signoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+  const router = useRouter();
 
-  function handleSignout() {
+  useEffect(() => {
+    const timer = signoutTimerRef.current;
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
+
+  async function handleSignout() {
+    if (signoutTimerRef.current) {
+      clearTimeout(signoutTimerRef.current);
+    }
+
     setIsSigningOut(true);
-    apiClient.logout();
-    setIsSigningOut(false);
+    try {
+      apiClient.logout();
+
+      signoutTimerRef.current = setTimeout(() => {
+        setUser(null);
+        setIsSigningOut(false);
+        router.push("/");
+      }, 2000);
+    } catch (error) {
+      console.error(`Logout error: ${error}`);
+      setIsSigningOut(false);
+    }
   }
 
   let cartCount: number;
