@@ -1,6 +1,7 @@
 import { generateToken, hashPassword, verifyPassword } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { Role } from "@/types";
+import { revalidatePath } from "next/cache";
 
 export async function registerUser(data: {
   firstname: string;
@@ -38,7 +39,7 @@ export async function loginUser(data: { email: string; password: string }) {
   if (!isCorrectPassword) throw new Error("Invalid credentials");
 
   const token = generateToken(userFromDB.id);
-
+  
   return {
     user: {
       id: userFromDB.id,
@@ -50,3 +51,21 @@ export async function loginUser(data: { email: string; password: string }) {
     },
   };
 }
+
+export async function getClothes() {
+  try {
+    const clothes = await prisma.cloth.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+
+    return { clothes: clothes || [] };
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Error fetching clothes from database:", error);
+    // Return empty array on error, let component handle fallback
+    return { clothes: [] };
+  }
+}
+
+
+

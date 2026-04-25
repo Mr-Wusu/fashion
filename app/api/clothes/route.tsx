@@ -1,4 +1,5 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
+import { getClothes } from "@/lib/authService";
 import { prisma } from "@/lib/db";
 import { Order_Status, Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -12,10 +13,7 @@ const errMsg2 = "You do not have the right to add cloth";
 
 export async function GET() {
   try {
-    const clothes = await prisma.cloth.findMany({
-      orderBy: { createdAt: "desc" }, // or however you want them sorted
-    });
-
+    const clothes = await getClothes()
     return NextResponse.json({ clothes }, { status: 200 });
   } catch (error) {
     console.error(`Error fetching clothes: ${error}`);

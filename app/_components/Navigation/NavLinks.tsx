@@ -1,12 +1,11 @@
-
 import { getCurrentuser } from "@/lib/auth";
 import { Role } from "@/types";
-import Link from "next/link";
 
+import ClientLink from "./ClientLink";
 
 export default async function NavLinks() {
-  const user = await getCurrentuser()
- 
+  const user = await getCurrentuser();
+
   let cartCount: number;
   if (user && user.orders) {
     cartCount = user.orders.length;
@@ -14,30 +13,15 @@ export default async function NavLinks() {
     cartCount = 0;
   }
 
-
   return (
     <ul className="flex md:space-x-3 lg:space-x-5 md:text-lg lg:text-xl -ml-12">
-      <Link
-        className={`cursor-pointer border-b-2 border-b-transparent px-2 transition-all duration-300 rounded-[.4rem]  `}
-        href="/"
-      >
-        Home
-      </Link>
-      <Link
-        className={`cursor-pointer border-b-2 border-b-transparent px-2 transition-all duration-300 rounded-[.4rem]  `}
-        href="/about-us"
-      >
-        About Us
-      </Link>
-      <Link
-        className={`cursor-pointer border-b-2 border-b-transparent px-2 transition-all duration-300 rounded-[.4rem]`}
-        href="/contact-us"
-      >
-        Contact Us
-      </Link>
+      <ClientLink href="/">Home</ClientLink>
+      <ClientLink href="/about-us">About Us</ClientLink>
+      <ClientLink href="/contact-us">Contact Us</ClientLink>
+
       {user && (
-        <Link
-          className={`relative cursor-pointer border-b-2 border-b-transparent hover:border-b-lightRose1 px-2 transition-all duration-300 rounded-[.4rem] `}
+        <ClientLink
+          
           href={`${user.role !== Role.USER ? "/orders" : "/cart"}`}
         >
           {user.role !== Role.USER ? "Orders" : "Cart"}
@@ -46,7 +30,7 @@ export default async function NavLinks() {
               {cartCount}
             </span>
           )}
-        </Link>
+        </ClientLink>
       )}
     </ul>
   );

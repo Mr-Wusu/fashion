@@ -2,23 +2,21 @@
 import { GiClothes } from "react-icons/gi";
 import Cloth from "@/app/_components/HomePage/Cloth";
 import Link from "next/link";
-import { MoonLoader } from "react-spinners";
 
 import clothesDummy from "@/data/clothes"
-import apiClient from "@/lib/apiClient";
+import { getCurrentuser } from "@/lib/auth";
+import { getClothes } from "@/lib/authService";
+
 
 export default async function Clothes() {
-  const clothes = await apiClient.getClothes()
+  const { clothes } = await getClothes();
+  const user = await getCurrentuser();
+  
+ 
+  
 
-
-  if (clothes === undefined)
-    return (
-      <div className="flex justify-center items-center h-[50vh]">
-        <MoonLoader color="#E11D48" size={50} />
-      </div>
-    );
-
-    
+  // Use dummy data if no clothes from database
+  const displayClothes = clothes && clothes.length > 0 ? clothes : clothesDummy;
 
   return (
     <section className="flex flex-col gap-6 bg-lightRose1 px-6 pt-11 pb-9 ">
@@ -31,13 +29,9 @@ export default async function Clothes() {
       <div
         className={`grid place-items-center gap-12 md:grid-cols-2 md:gap-x-0 md:w-[45rem] lg:grid-cols-3 lg:w-full mx-auto`}
       >
-        {clothes?.length === 0 ? clothesDummy.map((cloth) => (
-          <Cloth key={cloth.id} cloth={cloth} />
-        )): clothes.map((cloth) => (
-          <Cloth key={cloth.id} cloth={cloth} />
+        {displayClothes.map((cloth) => (
+          <Cloth key={cloth.id} cloth={cloth} user={user} />
         ))}
-        
-        
       </div>
       <Link
         className=" w-max font-semibold text-darkRose2 mt-2 border-b-2 border-solid border-transparent hover:border-darkRose1 p-1 transition-all  duration-300 active:scale-90 focus:border-darkRose1 focus:border-2 md:text-base lg:text-lg"

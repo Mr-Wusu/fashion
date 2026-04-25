@@ -20,9 +20,11 @@ export default function AddToCart({ cloth, styles }: AddToCartProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useAuth();
 
+  if (user?.role !== Role.USER) return null;
+
   // Find the order item for this cloth in the user's orders
   const orderItem =
-    user?.orders
+    user.orders
       ?.flatMap((order) => order.orderItems)
       .find((item) => item.cloth.id === cloth.id) || null;
 
@@ -60,32 +62,31 @@ export default function AddToCart({ cloth, styles }: AddToCartProps) {
 
   return (
     <>
-      {user?.role !== Role.USER &&
-        (isOpen ? (
-          <div className="relative bg-rose-300 rounded-[.6rem]">
-            <MdClose
-              className="absolute bg-rose-600 text-white h-5 w-5 rounded-full p-1  hover:bg-rose-500 cursor-pointer -top-2 -right-3.5"
-              onClick={() => setIsOpen(false)}
-            />
-            <div
-              className={`flex px-1 items-center  justify-between ${styles}`}
-            >
-              <Button className="px-2" onClick={increaseHandler}>
-                <MdAdd className="text-sm" />
-              </Button>
-              <Button className="px-2" onClick={decreaseHandler}>
-                <FaMinus className="text-sm" />
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <Button
-            className="tracking-wider px-2 py-1.5 w-fit"
-            onClick={() => setIsOpen(true)}
+      {isOpen ? (
+        <div className="relative bg-rose-300 rounded-[.6rem]">
+          <MdClose
+            className="absolute bg-rose-600 text-white h-5 w-5 rounded-full p-1  hover:bg-rose-500 cursor-pointer -top-2 -right-3.5"
+            onClick={() => setIsOpen(false)}
+          />
+          <div
+            className={`flex px-1 items-center  justify-between ${styles}`}
           >
-            Add to Cart
-          </Button>
-        ))}
+            <Button className="px-2" onClick={increaseHandler}>
+              <MdAdd className="text-sm" />
+            </Button>
+            <Button className="px-2" onClick={decreaseHandler}>
+              <FaMinus className="text-sm" />
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <Button
+          className="tracking-wider px-2 py-1.5 w-fit"
+          onClick={() => setIsOpen(true)}
+        >
+          Add to Cart
+        </Button>
+      )}
     </>
   );
 }

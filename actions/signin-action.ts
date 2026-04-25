@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { loginUser } from "@/lib/authService"; 
 import { AuthUser, Role } from "@/types";
 
@@ -26,6 +27,14 @@ export default async function signin(
 
   try {
     const { user } = await loginUser({ email, password });
+
+    const cookieStore = await cookies();
+    cookieStore.set("token", user.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
+    });
 
     return {
       errors,

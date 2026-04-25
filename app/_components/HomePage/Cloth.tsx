@@ -6,16 +6,22 @@ import { useState } from "react";
 import EditingForm from "./EditingForm";
 import ConfirmDelete from "./ConfirmDelete";
 import AddToCart from "../ClothId/AddToCart";
-import { useAuth } from "@/contexts/authProvider";
-import { Role, Cloth as ICloth } from "@/types";
 
+import { Role, Cloth as ICloth, AuthUser } from "@/types";
 
+interface ClothProps {
+  cloth: ICloth;
+  user?: AuthUser | null;
+}
 
-export default function Cloth({ cloth }: { cloth: ICloth }) {
+export default function Cloth({ cloth, user }: ClothProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
 
-  const { user } = useAuth();
+  const isAdmin = user?.role === Role.ADMIN || user?.role === Role.TEST_ADMIN;
+  
+   console.log(`User from Cloth.tsx: ${user}`);
+
   const buttonStyle =
     "bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-400 hover:to-rose-700 transition-all duration-700 py-1.5 px-2 rounded-[.27rem] text-lightRose2 tracking-wider";
 
@@ -27,7 +33,7 @@ export default function Cloth({ cloth }: { cloth: ICloth }) {
       {isEditing && <EditingForm setIsEditing={setIsEditing} />}
 
       <div className="relative h-[14.6rem] overflow-hidden w-full ">
-        {user?.role !== Role.USER && (
+        {isAdmin && (
           <AdminClothEffect
             setIsEditing={setIsEditing}
             setOpenConfirmDelete={setOpenConfirmDelete}
@@ -45,15 +51,15 @@ export default function Cloth({ cloth }: { cloth: ICloth }) {
         <p className="px-3">{cloth.description}</p>
         <div
           className={`mt-4 mb-1.5 px-3 ${
-            user?.role !== Role.USER
-              ? "flex justify-center "
-              : "flex justify-between"
+            isAdmin ? "flex justify-center" : "flex justify-between"
           }`}
         >
-          <AddToCart cloth={cloth} styles="px-2 py-1.5 w-[6.5rem]" />
+          {!isAdmin && (
+            <AddToCart cloth={cloth} styles="px-2 py-1.5 w-[6.5rem]" />
+          )}
           <Link
             className={`${buttonStyle} ${
-              user?.role !== Role.USER ? "w-3/4 grid place-content-center" : ""
+              isAdmin ? "w-3/4 grid place-content-center" : ""
             } `}
             href={`/clothes/${cloth.id}`}
           >

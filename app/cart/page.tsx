@@ -1,7 +1,7 @@
 // import Cart from "../_components/Cart";
 import Back from "@/app/_components/Miscellaneous/Back";
-import CartList from "@/app/_components/Cart/CartList";
-import CartSummary from "@/app/_components/Cart/CartSummary";
+import CartList from "@/app/_components/Order/CartList";
+import CartSummary from "@/app/_components/Order/CartSummary";
 
 export const metadata = {
   title: "Cart | Blews Stitches",

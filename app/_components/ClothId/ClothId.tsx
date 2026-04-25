@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import AddToCart from "./AddToCart";
 import Back from "../Miscellaneous/Back";
-import apiClient from "@/lib/apiClient";
+
+import { getClothes } from "@/lib/authService";
 
 export default async function ClothId({
   slug,
@@ -11,7 +12,7 @@ export default async function ClothId({
   slug: string;
   bg: string;
 }) {
-  const clothes = await apiClient.getClothes();
+  const {clothes} = await getClothes();
   const cloth = clothes.find((c) => c.id === slug);
 
   if (!cloth) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
+import { useHomePage } from "@/contexts/homepageContext";
 import Link from "next/link";
 import { Button } from "@/app/_components/Miscellaneous/Button";
 import { IoClose } from "react-icons/io5";
@@ -24,6 +24,7 @@ export default function Navbar({ navLinks }: NavbarClientProps) {
   const signoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { user, setUser } = useAuth();
+  const {isHomePage, isScrolled} = useHomePage()
   const router = useRouter();
 
   useEffect(() => {
@@ -95,7 +96,7 @@ export default function Navbar({ navLinks }: NavbarClientProps) {
         )}
       </nav>
       <nav
-        className={`hidden md:flex h-16 px-4 fixed w-full z-50 shadow-md items-center justify-between  `}
+        className={`hidden md:flex h-16 px-4 fixed w-full z-50 shadow-md items-center justify-between ${isHomePage && !isScrolled? "text-lightRose2 hover:": !isHomePage && !isScrolled? "bg-rose-50 text-darkRose2":"bg-rose-50 text-darkRose2"} `}
       >
         <h2 className={`h2-custom-font md:text-xl lg:text-2xl `}>
           Blews&apos; Stitches
