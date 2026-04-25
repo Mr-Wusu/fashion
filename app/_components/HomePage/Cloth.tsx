@@ -54,7 +54,7 @@ export default function Cloth({ cloth, user }: ClothProps) {
             isAdmin ? "flex justify-center" : "flex justify-between"
           }`}
         >
-          {!isAdmin && (
+          {(!isAdmin) && (
             <AddToCart cloth={cloth} styles="px-2 py-1.5 w-[6.5rem]" />
           )}
           <Link

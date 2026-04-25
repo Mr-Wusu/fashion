@@ -13,18 +13,15 @@ import apiClient from "@/lib/apiClient";
 import { useAuth } from "@/contexts/authProvider";
 import { Role } from "@/types";
 import { useRouter } from "next/navigation";
+import NavLinks from "./NavLinks";
 
-interface NavbarClientProps {
-  navLinks: React.ReactNode; // accept server component as a prop
-}
-
-export default function Navbar({ navLinks }: NavbarClientProps) {
+export default function Navbar() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const signoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { user, setUser } = useAuth();
-  const {isHomePage, isScrolled} = useHomePage()
+  const { isHomePage, isScrolled } = useHomePage();
   const router = useRouter();
 
   useEffect(() => {
@@ -41,24 +38,24 @@ export default function Navbar({ navLinks }: NavbarClientProps) {
 
     setIsSigningOut(true);
     try {
-      apiClient.logout();
-
-      signoutTimerRef.current = setTimeout(() => {
-        setUser(null);
-        setIsSigningOut(false);
-        router.push("/");
-      }, 2000);
+      await apiClient.logout();
+      setUser(null);
+      // NavLinks is now client-side, so it will update automatically
+      router.push("/");
     } catch (error) {
       console.error(`Logout error: ${error}`);
       setIsSigningOut(false);
     }
   }
 
-  let cartCount: number;
+  let cartCount: number = 0;
   if (user && user.orders) {
-    cartCount = user.orders.length;
-  } else {
-    cartCount = 0;
+    cartCount = user.orders.reduce((total, order) => {
+      return (
+        total +
+        (order.orderItems?.reduce((sum, item) => sum + item.quantity, 0) || 0)
+      );
+    }, 0);
   }
 
   function handleClick() {
@@ -96,12 +93,12 @@ export default function Navbar({ navLinks }: NavbarClientProps) {
         )}
       </nav>
       <nav
-        className={`hidden md:flex h-16 px-4 fixed w-full z-50 shadow-md items-center justify-between ${isHomePage && !isScrolled? "text-lightRose2 hover:": !isHomePage && !isScrolled? "bg-rose-50 text-darkRose2":"bg-rose-50 text-darkRose2"} `}
+        className={`hidden md:flex h-16 px-4 fixed w-full z-50 shadow-md items-center justify-between ${isHomePage && !isScrolled ? "text-lightRose2 hover:" : !isHomePage && !isScrolled ? "bg-rose-50 text-darkRose2" : "bg-rose-50 text-darkRose2"} `}
       >
         <h2 className={`h2-custom-font md:text-xl lg:text-2xl `}>
           Blews&apos; Stitches
         </h2>
-        {navLinks}
+        <NavLinks />
         {user ? (
           <>
             <div

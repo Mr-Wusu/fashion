@@ -1,16 +1,20 @@
-import { getCurrentuser } from "@/lib/auth";
-import { Role } from "@/types";
+"use client";
 
+import { Role } from "@/types";
+import { useAuth } from "@/contexts/authProvider";
 import ClientLink from "./ClientLink";
 
-export default async function NavLinks() {
-  const user = await getCurrentuser();
+export default function NavLinks() {
+  const { user } = useAuth();
 
-  let cartCount: number;
+  let cartCount: number = 0;
   if (user && user.orders) {
-    cartCount = user.orders.length;
-  } else {
-    cartCount = 0;
+    cartCount = user.orders.reduce((total, order) => {
+      return (
+        total +
+        (order.orderItems?.reduce((sum, item) => sum + item.quantity, 0) || 0)
+      );
+    }, 0);
   }
 
   return (
@@ -20,12 +24,9 @@ export default async function NavLinks() {
       <ClientLink href="/contact-us">Contact Us</ClientLink>
 
       {user && (
-        <ClientLink
-          
-          href={`${user.role !== Role.USER ? "/orders" : "/cart"}`}
-        >
+        <ClientLink href={`${user.role !== Role.USER ? "/orders" : "/cart"}`}>
           {user.role !== Role.USER ? "Orders" : "Cart"}
-          {cartCount > 0 && (
+          {user.role === Role.USER && cartCount > 0 && (
             <span className="h-4 w-4 rounded-full grid place-content-center bg-rose-500 text-white text-xs absolute top-0 -right-2">
               {cartCount}
             </span>

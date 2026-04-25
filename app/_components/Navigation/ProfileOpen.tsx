@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   TiCloudStorageOutline,
   TiCogOutline,
@@ -10,9 +11,9 @@ import {
 import { GiThink } from "react-icons/gi";
 import { useState } from "react";
 
-
 import { Button } from "../Miscellaneous/Button";
 import apiClient from "@/lib/apiClient";
+import { useAuth } from "@/contexts/authProvider";
 import { Role } from "@/types";
 
 // Define the props interface to match useUser() return type
@@ -35,17 +36,26 @@ export default function ProfileOpen({
   nameFont,
 }: ProfileOpenProps) {
   const [isSigningOut, setIsSigningOut] = useState(false);
-
+  const { setUser } = useAuth();
+  const router = useRouter();
 
   function toggleModal(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
     setIsProfileOpen(false);
   }
 
-  function handleSignout() {
+  async function handleSignout() {
     setIsSigningOut(true);
-    apiClient.logout()
-    setIsSigningOut(false)
+    try {
+      await apiClient.logout();
+      setUser(null);
+      // NavLinks is now client-side, so it will update automatically
+      router.push("/");
+    } catch (error) {
+      console.error(`Logout error: ${error}`);
+      setIsSigningOut(false);
+    }
+    setIsSigningOut(false);
   }
 
   return (

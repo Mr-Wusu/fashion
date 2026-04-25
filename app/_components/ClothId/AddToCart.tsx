@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "../Miscellaneous/Button";
 
 // import toast, { Toast } from "react-hot-toast";
@@ -19,8 +20,20 @@ interface AddToCartProps {
 export default function AddToCart({ cloth, styles }: AddToCartProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useAuth();
+  const router = useRouter();
 
-  if (user?.role !== Role.USER) return null;
+  if (user?.role === Role.ADMIN || user?.role === Role.TEST_ADMIN) return null;
+
+  if (!user) {
+    return (
+      <Button
+        className={`tracking-wider px-2 py-1.5 w-fit ${styles}`}
+        onClick={() => router.push("/auth/sign-in")}
+      >
+        Add to Cart
+      </Button>
+    );
+  }
 
   // Find the order item for this cloth in the user's orders
   const orderItem =
@@ -68,9 +81,7 @@ export default function AddToCart({ cloth, styles }: AddToCartProps) {
             className="absolute bg-rose-600 text-white h-5 w-5 rounded-full p-1  hover:bg-rose-500 cursor-pointer -top-2 -right-3.5"
             onClick={() => setIsOpen(false)}
           />
-          <div
-            className={`flex px-1 items-center  justify-between ${styles}`}
-          >
+          <div className={`flex px-1 items-center  justify-between ${styles}`}>
             <Button className="px-2" onClick={increaseHandler}>
               <MdAdd className="text-sm" />
             </Button>
