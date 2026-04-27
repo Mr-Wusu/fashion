@@ -2,7 +2,7 @@
 
 import { storeCloth } from "@/lib/authService";
 import { uploadImage } from "@/lib/cloudinary";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 interface IErrors {
   image?: string;
@@ -51,7 +51,6 @@ export default async function clothUpload(
   }
 
   if (Object.keys(errors).length > 0) {
-    revalidatePath("/upload-cloth");
     return { errors };
   }
 
@@ -72,7 +71,7 @@ export default async function clothUpload(
   });
 
   if (result.success === true) {
-    revalidatePath("/");
+    revalidateTag('clothes', 'default');
     return { errors: {}, successMessage: result.message };
   } else {
     errors.general = result.error;

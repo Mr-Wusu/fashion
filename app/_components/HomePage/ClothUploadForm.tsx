@@ -1,14 +1,15 @@
 "use client";
 import { PulseLoader } from "react-spinners";
 import { Button } from "../Miscellaneous/Button";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import clothUpload from "@/actions/upload-action";
 import toast from "react-hot-toast";
 
 export default function ClothUploadForm() {
+  const formRef = useRef<HTMLFormElement>(null);
   const [formState, formAction, isPending] = useActionState(clothUpload, {
     errors: {},
-    successMessage: undefined, // Update initial state
+    successMessage: undefined,
   });
 
   useEffect(() => {
@@ -18,7 +19,10 @@ export default function ClothUploadForm() {
         duration: 4000,
         icon: "✅",
       });
-      // Optionally, reset the form here if needed
+      // Reset form after successful upload
+      formRef.current?.reset();
+      // Dispatch event to trigger clothes refetch
+      window.dispatchEvent(new Event("clothesUploaded"));
     }
 
     // Handle General Error
@@ -31,7 +35,11 @@ export default function ClothUploadForm() {
   }, [formState.errors.general, formState.successMessage]);
 
   return (
-    <form className="flex flex-col gap-4 px-4 py-6" action={formAction}>
+    <form
+      ref={formRef}
+      className="flex flex-col gap-4 px-4 py-6"
+      action={formAction}
+    >
       <textarea
         className="min-h-32 bg-white border-2 rounded px-2 py-1 w-[20rem] border-rose-500 focus:outline-none resize-vertical transform translateZ-0"
         placeholder="Cloth description"
@@ -56,7 +64,7 @@ export default function ClothUploadForm() {
         <ul className="text-rose-500 w-80">
           {Object.entries(formState.errors).map(
             ([field, error]) =>
-              field !== "general" && error && <li key={field}>{error}</li>
+              field !== "general" && error && <li key={field}>{error}</li>,
           )}
         </ul>
       )}

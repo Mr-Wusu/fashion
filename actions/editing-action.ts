@@ -1,8 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { editClothDB, getClothById } from "@/queries/clothes";
+import { revalidateTag } from "next/cache";
+
 import { deleteImage, uploadImage } from "@/lib/cloudinary";
+import { editClothDB, getClothById } from "@/lib/authService";
 
 interface IErrors {
   image?: string;
@@ -49,7 +50,7 @@ export default async function editCloth(
   const clothResult = await getClothById(clothId);
 
   if (!clothResult.success || !clothResult.cloth) {
-    errors.general = "Cloth not found";
+    errors.general = clothResult.error || "Cloth not found";
     return { errors };
   }
 
@@ -92,7 +93,7 @@ export default async function editCloth(
     altTag?: string;
     price?: number;
     description?: string;
-    image?: string;
+    imageUrl?: string;
   } = {};
 
   if (altTag && altTag.trim() !== "") {
@@ -103,7 +104,7 @@ export default async function editCloth(
     updateData.description = description.trim();
   }
   if (newImageUrl !== clothResult.cloth.imageUrl)
-    updateData.image = newImageUrl;
+    updateData.imageUrl = newImageUrl;
 
   // Update cloth in database
   const result = await editClothDB({
@@ -116,7 +117,7 @@ export default async function editCloth(
     return { errors };
   }
 
-  revalidatePath("/");
+  revalidateTag('clothes', 'default');
 
   return {
     errors: {
