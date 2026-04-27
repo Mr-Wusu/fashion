@@ -37,13 +37,22 @@ export default function Navbar() {
     }
 
     setIsSigningOut(true);
+    const delayPromise = new Promise<void>((resolve) => {
+      signoutTimerRef.current = setTimeout(resolve, 2000);
+    });
+
     try {
-      await apiClient.logout();
+      await Promise.all([apiClient.logout(), delayPromise]);
       setUser(null);
       // NavLinks is now client-side, so it will update automatically
       router.push("/");
     } catch (error) {
       console.error(`Logout error: ${error}`);
+    } finally {
+      if (signoutTimerRef.current) {
+        clearTimeout(signoutTimerRef.current);
+        signoutTimerRef.current = null;
+      }
       setIsSigningOut(false);
     }
   }

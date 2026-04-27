@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const isAdmin = checkUserPermission(user, Role.TEST_ADMIN);   
+    const isAdmin = checkUserPermission(user, Role.TEST_ADMIN);
 
     if (isAdmin) {
       return NextResponse.json(
@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
     }
 
     const { clothId, quantity } = await req.json();
- 
 
     if (!clothId || !quantity) {
       return NextResponse.json(
@@ -151,6 +150,69 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ orderItem: updatedOrderItem });
   } catch (error) {
     console.error("Update order item error:", error);
+    return NextResponse.json(
+      { error: "Internal server error! Something went wrong!" },
+      { status: 500 },
+    );
+  }
+}
+
+// DELETE /api/order_items — Remove an order item
+export async function DELETE(req: NextRequest) {
+  try {
+    const user = await getCurrentuser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "You must be logged in to remove order items." },
+        { status: 401 },
+      );
+    }
+
+    const isAdmin = checkUserPermission(user, Role.TEST_ADMIN);
+
+    if (isAdmin) {
+      return NextResponse.json(
+        { error: "Admins are not permitted to remove order items." },
+        { status: 403 },
+      );
+    }
+
+    const { orderItemId } = await req.json();
+
+    if (!orderItemId) {
+      return NextResponse.json(
+        { error: "orderItemId is required." },
+        { status: 400 },
+      );
+    }
+
+    const orderItem = await prisma.orderItem.findUnique({
+      where: { id: orderItemId },
+      include: { order: true },
+    });
+
+    if (!orderItem) {
+      return NextResponse.json(
+        { error: "Order item not found." },
+        { status: 404 },
+      );
+    }
+
+    if (orderItem.order.userId !== user.id) {
+      return NextResponse.json(
+        { error: "You can only remove your own order items." },
+        { status: 403 },
+      );
+    }
+
+    await prisma.orderItem.delete({
+      where: { id: orderItemId },
+    });
+
+    return NextResponse.json({ message: "Order item removed successfully." });
+  } catch (error) {
+    console.error("Remove order item error:", error);
     return NextResponse.json(
       { error: "Internal server error! Something went wrong!" },
       { status: 500 },

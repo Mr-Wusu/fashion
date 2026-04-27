@@ -51,6 +51,7 @@ export interface Cloth {
 
 export interface OrderItem {
   id: string;
+  clothId: string;
   cloth: Cloth;
   quantity: number;
   priceAtPurchase: number;

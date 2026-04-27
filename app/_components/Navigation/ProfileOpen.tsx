@@ -9,7 +9,7 @@ import {
   TiTimes,
 } from "react-icons/ti";
 import { GiThink } from "react-icons/gi";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "../Miscellaneous/Button";
 import apiClient from "@/lib/apiClient";
@@ -36,8 +36,17 @@ export default function ProfileOpen({
   nameFont,
 }: ProfileOpenProps) {
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const signoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { setUser } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    return () => {
+      if (signoutTimerRef.current) {
+        clearTimeout(signoutTimerRef.current);
+      }
+    };
+  }, []);
 
   function toggleModal(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
@@ -46,16 +55,26 @@ export default function ProfileOpen({
 
   async function handleSignout() {
     setIsSigningOut(true);
+
+    const delayPromise = new Promise<void>((resolve) => {
+      signoutTimerRef.current = setTimeout(resolve, 2000);
+    });
+
     try {
-      await apiClient.logout();
+      await Promise.all([apiClient.logout(), delayPromise]);
       setUser(null);
+
       // NavLinks is now client-side, so it will update automatically
       router.push("/");
     } catch (error) {
       console.error(`Logout error: ${error}`);
+    } finally {
+      if (signoutTimerRef.current) {
+        clearTimeout(signoutTimerRef.current);
+        signoutTimerRef.current = null;
+      }
       setIsSigningOut(false);
     }
-    setIsSigningOut(false);
   }
 
   return (

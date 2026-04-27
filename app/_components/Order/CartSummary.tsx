@@ -1,14 +1,18 @@
 "use client";
 import { Button } from "@/app/_components/Miscellaneous/Button";
-import { useSelector } from "react-redux";
-import { RootState } from "@/state/store";
+import { useAuth } from "@/contexts/authProvider";
 
 function CartSummary() {
-  const cart = useSelector((state: RootState) => state.cart);
-  const totalPrice = cart.reduce(
-    (total, item) => total + item.unitPrice * item.unit,
-    0
+  const { user } = useAuth();
+
+  if (!user) return null;
+
+  const cartItems = user.orders?.flatMap((order) => order.orderItems) || [];
+  const totalPrice = cartItems.reduce(
+    (total, item) => total + item.priceAtPurchase * item.quantity,
+    0,
   );
+
   return (
     <aside className="flex flex-col gap-4 w-[90%] max-w-[26rem] lg:self-start">
       <div className="flex flex-col gap-[1.2px] bg-rose-300 h-fit rounded-[.75rem] overflow-hidden shadow-sm shadow-black">

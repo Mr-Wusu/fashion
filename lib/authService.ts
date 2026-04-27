@@ -92,10 +92,23 @@ if (!hasRight) throw new Error("You have no such priviledge!");
     altTag,
   },
 });
-return {success: true, message: "Cloth upload successful"}
+return {success: true, message: "Cloth uploaded successfully"}
   } catch(err) {
     console.error(`Storing cloth error: ${err}`);
     return { success: false, error: "Cloth upload failed" };
   }
   
 }
+
+// export async function editCloth(data: {
+//   imageUrl?: string;
+//   description?: string;
+//   price?: string;
+//   altTag?: string;
+// }) {
+//   try {
+//     const {imageUrl, description, price, altTag}
+//   } catch (error) {
+    
+//   }
+// }

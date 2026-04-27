@@ -3,6 +3,7 @@ import { getClothes } from "@/lib/authService";
 import { prisma } from "@/lib/db";
 import { Order_Status, Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
+import { unstable_cache, revalidateTag } from "next/cache";
 
 function nextReturnError(msg: string): { error: string } {
   return { error: msg };
@@ -12,8 +13,17 @@ const errMsg1 = "You are not authenticated";
 const errMsg2 = "You do not have the right to add cloth";
 
 export async function GET() {
+  const getCachedClothes = unstable_cache(
+    async () => {
+      const result = await getClothes();
+      return result.clothes;
+    },
+    ["clothes-cache"],
+    { tags: ["clothes"] },
+  );
+
   try {
-    const clothes = await getClothes()
+    const clothes = await getCachedClothes();
     return NextResponse.json({ clothes }, { status: 200 });
   } catch (error) {
     console.error(`Error fetching clothes: ${error}`);
@@ -59,6 +69,8 @@ export async function POST(req: NextRequest) {
         price,
       },
     });
+
+    revalidateTag("clothes", "default");
 
     return NextResponse.json({ cloth }, { status: 200 });
   } catch (error) {

@@ -1,22 +1,58 @@
+"use client";
 
 import { GiClothes } from "react-icons/gi";
 import Cloth from "@/app/_components/HomePage/Cloth";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-import clothesDummy from "@/data/clothes"
-import { getCurrentuser } from "@/lib/auth";
-import { getClothes } from "@/lib/authService";
+import clothesDummy from "@/data/clothes";
+import { Cloth as ICloth } from "@/types";
 
+export default function Clothes() {
+  const [clothes, setClothes] = useState<ICloth[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-export default async function Clothes() {
-  const { clothes } = await getClothes();
-  const user = await getCurrentuser();
-  
- 
-  
+  useEffect(() => {
+    let active = true;
 
-  // Use dummy data if no clothes from database
-  const displayClothes = clothes && clothes.length > 0 ? clothes : clothesDummy;
+    async function loadClothes() {
+      try {
+        const response = await fetch("/api/clothes");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (!active) return;
+
+        // Prioritize DB clothes - if we have DB data, use it
+        // If DB is empty, fall back to dummy data
+        setClothes(data.clothes || []);
+      } catch (error) {
+        console.error("Failed to load clothes from DB:", error);
+        if (active) {
+          // On error, fall back to dummy data
+          setClothes([]);
+        }
+      } finally {
+        if (active) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadClothes();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Prioritize DB clothes: if we have DB data (even empty array), use it
+  // Only show dummy data during initial loading
+  const displayClothes = isLoading
+    ? clothesDummy
+    : clothes && clothes.length > 0
+      ? clothes
+      : clothesDummy;
 
   return (
     <section className="flex flex-col gap-6 bg-lightRose1 px-6 pt-11 pb-9 ">
@@ -30,7 +66,7 @@ export default async function Clothes() {
         className={`grid place-items-center gap-12 md:grid-cols-2 md:gap-x-0 md:w-[45rem] lg:grid-cols-3 lg:w-full mx-auto`}
       >
         {displayClothes.map((cloth) => (
-          <Cloth key={cloth.id} cloth={cloth} user={user} />
+          <Cloth key={cloth.id} cloth={cloth} />
         ))}
       </div>
       <Link

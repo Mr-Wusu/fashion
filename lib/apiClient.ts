@@ -74,6 +74,13 @@ const apiClient = {
     });
   },
 
+  async removeOrderItem(orderItemId: string) {
+    return apiClient.request("/api/order_items", {
+      method: "DELETE",
+      body: JSON.stringify({ orderItemId }),
+    });
+  },
+
   async suggest(userData: unknown) {
     return apiClient.request("/api/suggestions", {
       method: "POST",

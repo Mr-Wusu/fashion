@@ -6,21 +6,20 @@ import { useState } from "react";
 import EditingForm from "./EditingForm";
 import ConfirmDelete from "./ConfirmDelete";
 import AddToCart from "../ClothId/AddToCart";
+import { useAuth } from "@/contexts/authProvider";
 
-import { Role, Cloth as ICloth, AuthUser } from "@/types";
+import { Role, Cloth as ICloth } from "@/types";
 
 interface ClothProps {
   cloth: ICloth;
-  user?: AuthUser | null;
 }
 
-export default function Cloth({ cloth, user }: ClothProps) {
+export default function Cloth({ cloth }: ClothProps) {
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
 
   const isAdmin = user?.role === Role.ADMIN || user?.role === Role.TEST_ADMIN;
-  
-   console.log(`User from Cloth.tsx: ${user}`);
 
   const buttonStyle =
     "bg-gradient-to-r from-rose-700 to-rose-400 hover:bg-gradient-to-r hover:from-rose-400 hover:to-rose-700 transition-all duration-700 py-1.5 px-2 rounded-[.27rem] text-lightRose2 tracking-wider";
