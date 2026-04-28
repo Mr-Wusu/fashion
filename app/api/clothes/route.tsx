@@ -1,6 +1,6 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
 import { getClothes } from "@/lib/authService";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { Order_Status, Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 import { unstable_cache, revalidateTag } from "next/cache";
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       );
 
     // Create cloth
-    const cloth = await prisma.cloth.create({
+    const cloth = await getPrisma().cloth.create({
       data: {
         description,
         imageUrl,

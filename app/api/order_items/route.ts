@@ -1,5 +1,5 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { Order_Status, Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const cloth = await prisma.cloth.findUnique({
+    const cloth = await getPrisma().cloth.findUnique({
       where: { id: clothId },
     });
 
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Find the user's existing order or create one on the fly
-    let order = await prisma.order.findFirst({
+    let order = await getPrisma().order.findFirst({
       where: {
         userId: user.id,
         status: Order_Status.PENDING, // only reuse active/pending orders
@@ -61,12 +61,12 @@ export async function POST(req: NextRequest) {
     });
 
     if (!order) {
-      order = await prisma.order.create({
+      order = await getPrisma().order.create({
         data: { userId: user.id },
       });
     }
 
-    const orderItem = await prisma.orderItem.create({
+    const orderItem = await getPrisma().orderItem.create({
       data: {
         orderId: order.id,
         clothId,
@@ -123,7 +123,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     // Fetch the item and its parent order to verify ownership
-    const orderItem = await prisma.orderItem.findUnique({
+    const orderItem = await getPrisma().orderItem.findUnique({
       where: { id: orderItemId },
       include: { order: true },
     });
@@ -142,7 +142,7 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const updatedOrderItem = await prisma.orderItem.update({
+    const updatedOrderItem = await getPrisma().orderItem.update({
       where: { id: orderItemId },
       data: { quantity },
     });
@@ -187,7 +187,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    const orderItem = await prisma.orderItem.findUnique({
+    const orderItem = await getPrisma().orderItem.findUnique({
       where: { id: orderItemId },
       include: { order: true },
     });
@@ -206,7 +206,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    await prisma.orderItem.delete({
+    await getPrisma().orderItem.delete({
       where: { id: orderItemId },
     });
 

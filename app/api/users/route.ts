@@ -1,5 +1,5 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { Role } from "@/types";
 import { NextResponse } from "next/server";
 
@@ -25,7 +25,7 @@ export async function GET() {
       );
     }
 
-    const users = await prisma.user.findMany({
+    const users = await getPrisma().user.findMany({
       select: {
         id: true,
         email: true,

@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import {
   checkUserPermission,
   generateToken,
@@ -5,7 +6,7 @@ import {
   hashPassword,
   verifyPassword,
 } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { Role } from "@/types";
 
 export async function registerUser(data: {
@@ -16,14 +17,14 @@ export async function registerUser(data: {
 }) {
   const { firstname, surname, email, password } = data;
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
+  const existingUser = await getPrisma().user.findUnique({ where: { email } });
   if (existingUser) throw new Error("Email already taken!"); // ✅ throws to caller
 
   const hashedPassword = await hashPassword(password);
-  const userCount = await prisma.user.count();
+  const userCount = await getPrisma().user.count();
   const role = userCount === 0 ? Role.ADMIN : Role.USER;
 
-  return prisma.user.create({
+  return getPrisma().user.create({
     data: { firstname, surname, email, password: hashedPassword, role },
     include: { suggestions: true, orders: true },
   });
@@ -32,7 +33,7 @@ export async function registerUser(data: {
 export async function loginUser(data: { email: string; password: string }) {
   const { email, password } = data;
 
-  const userFromDB = await prisma.user.findUnique({
+  const userFromDB = await getPrisma().user.findUnique({
     where: { email },
     include: { orders: true, suggestions: true },
   });
@@ -55,19 +56,17 @@ export async function loginUser(data: { email: string; password: string }) {
     },
   };
 }
-
-export async function getClothes() {
-  try {
-    const clothes = await prisma.cloth.findMany({
+export const getClothes = unstable_cache(
+  async () => {
+    return getPrisma().cloth.findMany({
       orderBy: { createdAt: "desc" },
     });
-    return { clothes: clothes || [] };
-  } catch (error) {
-    console.error("Error fetching clothes from database:", error);
-    // Return empty array on error, let component handle fallback
-    return { clothes: [] };
-  }
-}
+  },
+  ["clothes-cache"],
+  {
+    tags: ["clothes"],
+  },
+);
 
 export async function storeCloth(data: {
   imageUrl: string;
@@ -84,7 +83,7 @@ export async function storeCloth(data: {
     const hasRight = checkUserPermission(user, Role.TEST_ADMIN);
     if (!hasRight) throw new Error("You have no such priviledge!");
 
-    await prisma.cloth.create({
+    await getPrisma().cloth.create({
       data: {
         imageUrl,
         description,
@@ -101,7 +100,7 @@ export async function storeCloth(data: {
 
 export async function getClothById(id: string) {
   try {
-    const cloth = await prisma.cloth.findUnique({
+    const cloth = await getPrisma().cloth.findUnique({
       where: { id },
     });
     if (!cloth) {
@@ -123,7 +122,7 @@ export async function editClothDB(data: {
 }) {
   const { clothId, ...updateData } = data;
   try {
-    const updatedCloth = await prisma.cloth.update({
+    const updatedCloth = await getPrisma().cloth.update({
       where: { id: clothId },
       data: updateData,
     });

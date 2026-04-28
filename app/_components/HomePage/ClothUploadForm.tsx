@@ -9,22 +9,9 @@ export default function ClothUploadForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [formState, formAction, isPending] = useActionState(clothUpload, {
     errors: {},
-    successMessage: undefined,
   });
 
   useEffect(() => {
-    // Handle Success
-    if (formState.successMessage) {
-      toast.success(formState.successMessage, {
-        duration: 4000,
-        icon: "✅",
-      });
-      // Reset form after successful upload
-      formRef.current?.reset();
-      // Dispatch event to trigger clothes refetch
-      window.dispatchEvent(new Event("clothesUploaded"));
-    }
-
     // Handle General Error
     if (formState.errors.general) {
       toast.error(formState.errors.general, {
@@ -32,7 +19,7 @@ export default function ClothUploadForm() {
         icon: "❌",
       });
     }
-  }, [formState.errors.general, formState.successMessage]);
+  }, [formState.errors.general]);
 
   return (
     <form

@@ -12,7 +12,7 @@ export default async function ClothId({
   slug: string;
   bg: string;
 }) {
-  const {clothes} = await getClothes();
+  const clothes = await getClothes();
   const cloth = clothes.find((c) => c.id === slug);
 
   if (!cloth) {
@@ -46,8 +46,10 @@ export default async function ClothId({
           </p>
         </div>
         <div className="hidden gap-7 w-4/5 mx-auto items-center lg+:flex">
-          <AddToCart cloth={cloth} styles="px-2 py-[.55rem] w-[7.5rem]" />
-          <Back />
+          <AddToCart cloth={cloth} styles="px-2  w-[7.5rem]" />
+          <div className="py-[2px]">
+            <Back />
+          </div>
         </div>
       </div>
       <div className="flex gap-7 w-4/5 ml-auto md:ml-[6.5rem] md+:ml-[7.4rem] items-center py-4 lg+:hidden">

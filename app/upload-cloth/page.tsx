@@ -1,7 +1,12 @@
 import Image from "next/image";
 import ClothUploadForm from "../_components/HomePage/ClothUploadForm";
+import { getCurrentuser } from "@/lib/auth";
+import { Role } from "@/types";
 
-export default function UploadCloth() {
+export default async function UploadCloth() {
+  const user = await getCurrentuser()
+  if(!user || user?.role === Role.USER ) throw new Error("You are not authorized to be here! Go back!")
+    
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-1">
       <h2 className="text-darkRose2 px-4 md:px-7 text-lg md+:mb-7 lg:mb-5">

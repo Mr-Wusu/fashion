@@ -1,5 +1,5 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -31,7 +31,7 @@ export async function PATCH(
     }
 
     const { role } = await request.json();
-    
+
     // Validate role
     const validateRoles = [Role.USER, Role.TEST_ADMIN];
     if (!validateRoles.includes(role)) {
@@ -44,10 +44,8 @@ export async function PATCH(
       );
     }
 
-
-
     // Update team assignment
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await getPrisma().user.update({
       where: { id: userId },
       data: {
         role,

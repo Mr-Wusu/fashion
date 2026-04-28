@@ -1,5 +1,5 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { Order_Status, Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -25,7 +25,7 @@ export async function GET() {
       );
     }
 
-    const orders = await prisma.order.findMany({
+    const orders = await getPrisma().order.findMany({
       select: {
         id: true,
         user: true,
@@ -69,7 +69,7 @@ export async function DELETE(req: NextRequest) {
       });
 
     // Check if the order exists and if it can be deleted
-    const order = await prisma.order.findUnique({
+    const order = await getPrisma().order.findUnique({
       where: { id },
       select: { status: true },
     });
@@ -90,7 +90,7 @@ export async function DELETE(req: NextRequest) {
         { status: 409 },
       );
 
-    await prisma.order.delete({ where: { id } });
+    await getPrisma().order.delete({ where: { id } });
 
     return NextResponse.json(
       { message: "Order deleted successfully" },
@@ -125,7 +125,7 @@ export async function PATCH(req: NextRequest) {
         },
         { status: 409 },
       );
-    const orderExists = await prisma.order.findUnique({
+    const orderExists = await getPrisma().order.findUnique({
       where: { id },
     });
     if (!orderExists)
@@ -136,7 +136,7 @@ export async function PATCH(req: NextRequest) {
         { status: 404 },
       );
 
-    const updatedOrder = await prisma.order.update({
+    const updatedOrder = await getPrisma().order.update({
       where: { id },
       data: {
         status,

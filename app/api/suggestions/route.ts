@@ -1,5 +1,5 @@
 import { checkUserPermission, getCurrentuser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { Role } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
         { status: 409 },
       );
     // Write suggestion to database
-    const suggestion = await prisma.suggestion.create({
+    const suggestion = await getPrisma().suggestion.create({
       data: {
         imageUrl,
         description,
@@ -65,14 +65,17 @@ export async function DELETE(req: NextRequest) {
         { status: 409 },
       );
     // Check if suggestion exists, if it does delete it
-    await prisma.suggestion.delete({
+    await getPrisma().suggestion.delete({
       where: { id },
     });
-    return NextResponse.json({ message: "Suggestion deleted successfully!" }, {status: 200});
+    return NextResponse.json(
+      { message: "Suggestion deleted successfully!" },
+      { status: 200 },
+    );
   } catch (error) {
-    console.error(`Deletion error: ${error}`)
+    console.error(`Deletion error: ${error}`);
     return NextResponse.json({
-      error: "Internal server error. Something went wrong!"
-    })    
+      error: "Internal server error. Something went wrong!",
+    });
   }
 }
