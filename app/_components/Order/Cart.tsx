@@ -37,50 +37,61 @@ export default function Cart({
   const subtotal = unitPrice * orderItem.quantity;
 
   return (
-    <div className="flex justify-between px-3 bg-rose-100 py-4">
-      <div className="flex gap-2 items-center">
-        <div className="relative h-16 w-14 rounded-[.3rem] overflow-hidden">
+    <div className="group flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 py-5 bg-white hover:bg-rose-50/50 transition-colors border-b border-rose-100 last:border-0">
+      <div className="flex gap-4 items-center w-full sm:w-auto">
+        {/* Modern Image Container */}
+        <div className="relative h-20 w-16 rounded-xl overflow-hidden shadow-sm border border-rose-100">
           <Image
             src={orderItem.cloth.imageUrl}
             alt={orderItem.cloth.altTag || orderItem.cloth.description}
             fill
-            className="object-cover"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="text-sm text-darkRose1 font-semibold">
-            NGN {unitPrice} each
+
+        <div className="flex flex-col gap-1 flex-1">
+          <h3 className="text-sm text-gray-500 uppercase font-bold tracking-wider">
+            NGN {unitPrice.toLocaleString()}{" "}
+            <span className="lowercase font-normal">each</span>
           </h3>
-          <p className="text-sm text-rose-700">{orderItem.cloth.description}</p>
+          <p className="text-base text-darkRose2 font-medium line-clamp-1">
+            {orderItem.cloth.description}
+          </p>
           <button
             type="button"
-            className="flex cursor-pointer gap-2 text-sm text-rose-500"
+            className="flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-rose-800 transition-colors mt-1 w-fit"
             onClick={() => onRemove(orderItem.id)}
           >
-            <FiTrash2 className="text-rose-500" />
-            <span>Remove</span>
+            <FiTrash2 className="text-sm" />
+            <span>REMOVE ITEM</span>
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="font-semibold flex justify-end">NGN {subtotal}</div>
-        <div className="flex gap-[0.675rem] items-center w-fit self-end">
+      {/* Quantity & Subtotal Section */}
+      <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto mt-4 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-0 border-rose-50">
+        <div className="text-lg font-extrabold text-rose-900 order-2 sm:order-1">
+          NGN {subtotal.toLocaleString()}
+        </div>
+
+        <div className="flex items-center gap-3 bg-gray-50 p-1 rounded-lg border border-gray-100 order-1 sm:order-2">
           <Button
-            className="w-[2rem] h-[2rem] grid place-content-center"
+            className="w-8 h-8 rounded-md bg-white border border-gray-200 text-darkRose2 hover:bg-rose-600 hover:text-white transition-all shadow-sm"
             type="button"
             onClick={() => onDecrease(orderItem.id)}
             disabled={orderItem.quantity <= 1}
           >
-            <FiMinus />
+            <FiMinus size={12} />
           </Button>
-          <p>{orderItem.quantity}</p>
+          <span className="w-6 text-center font-bold text-darkRose2 text-sm">
+            {orderItem.quantity}
+          </span>
           <Button
-            className="w-[2rem] h-[2rem] grid place-content-center"
+            className="w-8 h-8 rounded-md bg-white border border-gray-200 text-darkRose2 hover:bg-rose-600 hover:text-white transition-all shadow-sm"
             type="button"
             onClick={() => onIncrease(orderItem.id)}
           >
-            <FiPlus />
+            <FiPlus size={12} />
           </Button>
         </div>
       </div>
