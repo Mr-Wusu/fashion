@@ -15,8 +15,8 @@ const errMsg2 = "You do not have the right to add cloth";
 export async function GET() {
   const getCachedClothes = unstable_cache(
     async () => {
-      const result = await getClothes();
-      return result.clothes;
+      const clothes = await getClothes();
+      return clothes;
     },
     ["clothes-cache"],
     { tags: ["clothes"] },
@@ -107,7 +107,7 @@ export async function DELETE(req: NextRequest) {
       );
 
     // Check if cloth exists
-    const cloth = await prisma.cloth.findUnique({
+    const cloth = await getPrisma().cloth.findUnique({
       where: { id },
     });
 
@@ -122,7 +122,7 @@ export async function DELETE(req: NextRequest) {
       );
 
     // Check if cloth has any pending or attending orders
-    const pendingOrders = await prisma.orderItem.findMany({
+    const pendingOrders = await getPrisma().orderItem.findMany({
       where: {
         clothId: id,
         order: {
@@ -144,7 +144,7 @@ export async function DELETE(req: NextRequest) {
         },
       );
 
-    await prisma.cloth.delete({
+    await getPrisma().cloth.delete({
       where: {
         id,
       },

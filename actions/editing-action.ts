@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { deleteImage, uploadImage } from "@/lib/cloudinary";
 import { editClothDB, getClothById } from "@/lib/authService";
@@ -64,10 +64,10 @@ export default async function editCloth(
       return { errors };
     }
 
-    // Validate image size (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    // Validate image size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (image.size > maxSize) {
-      errors.image = "Image size must be less than 5MB";
+      errors.image = "Image size must be less than 10MB";
       return { errors };
     }
   }
@@ -87,7 +87,7 @@ export default async function editCloth(
     return { errors };
   }
 
-  // Store cloth details including imageUrl in mongodb
+  // Store cloth details including imageUrl in neon postgresql
   // Prepare update data
   const updateData: {
     altTag?: string;
@@ -113,15 +113,11 @@ export default async function editCloth(
   });
 
   if (!result.success) {
-    errors.general = result.error || "Failed to update cloth";
-    return { errors };
+    return { errors: { general: result.error || "Failed to update cloth" } };
   }
 
   revalidateTag('clothes', 'default');
+  revalidatePath("/")
 
-  return {
-    errors: {
-      general: "Cloth successfully edited",
-    },
-  };
+  return { errors: {} };
 }

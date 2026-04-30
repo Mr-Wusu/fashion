@@ -132,3 +132,21 @@ export async function editClothDB(data: {
     return { success: false, error: "Failed to update cloth" };
   }
 }
+
+export async function deleteClothDB(id: string) {
+  try {
+    const cloth = await getPrisma().cloth.findUnique({ where: { id } });
+    if (!cloth) return { success: false, error: "Cloth not found" };
+
+    // Delete from DB directly without cache wrapping
+    await getPrisma().cloth.delete({ where: { id } });
+
+    return { success: true, imageUrl: cloth.imageUrl };
+  } catch (error) {
+    console.error("Delete error:", error);
+    return { success: false, error: "Failed to delete cloth" };
+  }
+}
+  
+
+

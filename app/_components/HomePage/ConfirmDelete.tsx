@@ -1,20 +1,27 @@
 "use client";
 
+import { deleteClothAction } from "@/actions/delete-cloth";
 import { Button } from "@/app/_components/Miscellaneous/Button";
 import { ButtonWhite } from "@/app/_components/Miscellaneous/ButtonWhite";
-
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface ConfirmDeleteProps {
   setOpenConfirmDelete: (isOpen: boolean) => void;
+  clothId: string; // Add this prop
 }
 
 export default function ConfirmDelete({
   setOpenConfirmDelete,
+  clothId,
 }: ConfirmDeleteProps) {
-  function handleDeleteCloth(id: string) {
-    //Perform some operations here
-    console.log(id);
+  async function handleDelete(id:string) {
+    const res = await deleteClothAction(id);
+    if (res.success) {
+      toast.success("Deleted successfully");
+      setOpenConfirmDelete(false);
+    } else {
+      toast.error(res.error || "Failed to delete");
+    }
   }
 
   return (
@@ -24,7 +31,7 @@ export default function ConfirmDelete({
       </h2>
       <p className="text-gray-600">This action cannot be undone.</p>
       <div className="flex gap-4 mt-4">
-        <Button className="px-2" onClick={() => handleDeleteCloth("id")}>
+        <Button className="px-2" onClick={() => handleDelete(clothId)}>
           Delete
         </Button>
         <ButtonWhite

@@ -27,9 +27,12 @@ export default function Cloth({ cloth }: ClothProps) {
   return (
     <figure className="flex flex-col shadow-md shadow-black/55 overflow-hidden rounded-[.7rem] h-fit w-[19rem] relative hover:scale-110 transition-all duration-300 hover:shadow-lg hover:shadow-black/75">
       {openConfirmDelete && (
-        <ConfirmDelete setOpenConfirmDelete={setOpenConfirmDelete} />
+        <ConfirmDelete
+          clothId={cloth.id}
+          setOpenConfirmDelete={setOpenConfirmDelete}
+        />
       )}
-      {isEditing && <EditingForm setIsEditing={setIsEditing} />}
+      {isEditing && <EditingForm cloth={cloth} setIsEditing={setIsEditing} />}
 
       <div className="relative h-[14.6rem] overflow-hidden w-full ">
         {isAdmin && (
@@ -53,7 +56,7 @@ export default function Cloth({ cloth }: ClothProps) {
             isAdmin ? "flex justify-center" : "flex justify-between"
           }`}
         >
-          {(!isAdmin) && (
+          {!isAdmin && (
             <AddToCart cloth={cloth} styles="px-2 py-1.5 w-[6.5rem]" />
           )}
           <Link

@@ -44,7 +44,7 @@ export default async function AdminOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

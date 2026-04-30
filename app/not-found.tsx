@@ -1,4 +1,6 @@
+
 import Link from "next/link";
+import NotFoundBack from "./_components/Miscellaneous/NotFoundBack";
 
 export default function NotFound() {
   return (
@@ -30,12 +32,13 @@ export default function NotFound() {
         >
           Return Home
         </Link>
-        <Link
+        {/* <Link
           href="/support"
           className="px-6 py-3 border border-gray-300 text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition-all active:scale-95"
         >
           Contact Support
-        </Link>
+        </Link> */}
+        <NotFoundBack/>
       </div>
     </div>
   );
