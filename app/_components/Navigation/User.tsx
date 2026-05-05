@@ -1,10 +1,9 @@
 "use client";
 
 import ProfileOpen from "./ProfileOpen";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import apiClient from "@/lib/apiClient";
+import { Dispatch, SetStateAction } from "react";
 
-type User = {
+type UserType = {
   firstname?: string;
   surname?: string;
   email?: string;
@@ -13,19 +12,11 @@ type User = {
 
 function User({
   setUserOpen,
+  user,
 }: {
   setUserOpen: Dispatch<SetStateAction<boolean>>;
+  user: UserType;
 }) {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    apiClient.getCurrentUser().then((data) => {
-      if (data) setUser(data.user); 
-    });
-  }, []);
-
-  if (!user) return null;
-
   return (
     <div>
       <ProfileOpen

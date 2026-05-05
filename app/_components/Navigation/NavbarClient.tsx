@@ -79,18 +79,21 @@ export default function Navbar() {
         <SideNav />
         <h2 className="h2-custom-font text-[1.2rem]">Blews&apos; Stitches</h2>
         {user ? (
-          <div
-            className={`relative flex text-darkRose1 rounded-full bg-rose-400 h-9 w-9 items-center justify-center  cursor-pointer hover:bg-rose-300 transition-colors duration-300`}
-            onClick={() => setUserOpen(!userOpen)}
-          >
-            {user.role === Role.USER && cartCount > 0 && (
-              <span className="h-4 w-4 rounded-full grid place-content-center bg-rose-500 text-white text-xs absolute -top-2 -right-1.5 z-50 md:hidden">
-                {cartCount}
+          <div className="relative">
+            <div
+              className="relative flex min-h-[2.25rem] min-w-[2.25rem] items-center justify-center rounded-full bg-rose-400 px-2 text-darkRose1 cursor-pointer hover:bg-rose-300 transition-colors duration-300"
+              onClick={() => setUserOpen(!userOpen)}
+            >
+              {user.role === Role.USER && cartCount > 0 && (
+                <span className="h-4 w-4 rounded-full grid place-content-center bg-rose-500 text-white text-xs absolute -top-2 -right-1.5 z-50 md:hidden">
+                  {cartCount}
+                </span>
+              )}
+              <span className="font-semibold text-sm leading-none">
+                {user.firstname.charAt(0)}{user.surname?.charAt(0)}
               </span>
-            )}
-            <p className="font-semibold">{user.firstname.charAt(0)}</p>
-            <p className="font-semibold">{user.surname?.charAt(0)}</p>
-            {userOpen && <User setUserOpen={setUserOpen} />}
+            </div>
+            {userOpen && <User setUserOpen={setUserOpen} user={user} />}
           </div>
         ) : (
           <Link

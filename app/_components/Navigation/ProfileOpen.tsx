@@ -142,7 +142,7 @@ export default function ProfileOpen({
                 <TiCloudStorageOutline />
                 <Link
                   className={`${nameFont} text-[0.89rem]`}
-                  href="/dashboard/upload-cloth"
+                  href="/upload-cloth"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsProfileOpen(false);
@@ -156,7 +156,7 @@ export default function ProfileOpen({
                 <TiCogOutline />
                 <Link
                   className={`${nameFont} text-[0.89rem]`}
-                  href="/dashboard/cloth-orders"
+                  href="/orders"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsProfileOpen(false);
@@ -170,7 +170,7 @@ export default function ProfileOpen({
                 <GiThink className="text-rose-900 ml-[0.155rem]" />
                 <Link
                   className={`${nameFont} text-[0.89rem]`}
-                  href="/dashboard/customer-suggestions"
+                  href="/customer-suggestions"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsProfileOpen(false);
