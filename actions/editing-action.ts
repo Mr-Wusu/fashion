@@ -70,21 +70,21 @@ export default async function editCloth(
       errors.image = "Image size must be less than 10MB";
       return { errors };
     }
-  }
 
-  newImageUrl = await uploadImage(image as File);
+    newImageUrl = await uploadImage(image);
 
-  // Delete old image from Cloudinary
-  const deleteSuccess = await deleteImage(clothResult.cloth.imageUrl);
-  if (!deleteSuccess) {
-    console.warn("Failed to delete old image from Cloudinary");
-    // Don't throw error, continue with update
-  }
+    // Delete old image from Cloudinary
+    const deleteSuccess = await deleteImage(clothResult.cloth.imageUrl);
+    if (!deleteSuccess) {
+      console.warn("Failed to delete old image from Cloudinary");
+      // Don't throw error, continue with update
+    }
 
-  // If image upload fails stop edit
-  if (!newImageUrl) {
-    errors.general = "Failed to upload image to cloudinary!";
-    return { errors };
+    // If image upload fails stop edit
+    if (!newImageUrl) {
+      errors.general = "Failed to upload image to cloudinary!";
+      return { errors };
+    }
   }
 
   // Store cloth details including imageUrl in neon postgresql
@@ -116,8 +116,8 @@ export default async function editCloth(
     return { errors: { general: result.error || "Failed to update cloth" } };
   }
 
-  revalidateTag('clothes', 'default');
-  revalidatePath("/")
+  revalidateTag("clothes", "default");
+  revalidatePath("/");
 
   return { errors: {} };
 }

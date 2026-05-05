@@ -74,7 +74,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`md:hidden justify-between min-h-16 items-center p-3 fixed w-full z-50 flex shadow-sm shadow-black/30 `}
+        className={`md:hidden justify-between min-h-16 items-center p-3 fixed w-full z-50 flex shadow-sm shadow-black/30 ${isHomePage && !isScrolled ? "text-lightRose2 hover:" : !isHomePage && !isScrolled ? "bg-rose-50 text-darkRose2" : "bg-rose-50 text-darkRose2"} `}
       >
         <SideNav />
         <h2 className="h2-custom-font text-[1.2rem]">Blews&apos; Stitches</h2>

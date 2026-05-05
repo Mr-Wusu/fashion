@@ -76,7 +76,7 @@ export default function Cart({
 
         <div className="flex items-center gap-3 bg-gray-50 p-1 rounded-lg border border-gray-100 order-1 sm:order-2">
           <Button
-            className="w-8 h-8 rounded-md bg-white border border-gray-200 text-darkRose2 hover:bg-rose-600 hover:text-white transition-all shadow-sm"
+            className="w-8 h-8 rounded-md bg-white border border-gray-200 text-darkRose2 hover:bg-rose-600 hover:text-white transition-all shadow-sm flex items-center justify-center"
             type="button"
             onClick={() => onDecrease(orderItem.id)}
             disabled={orderItem.quantity <= 1}
@@ -87,7 +87,7 @@ export default function Cart({
             {orderItem.quantity}
           </span>
           <Button
-            className="w-8 h-8 rounded-md bg-white border border-gray-200 text-darkRose2 hover:bg-rose-600 hover:text-white transition-all shadow-sm"
+            className="w-8 h-8 rounded-md bg-white border border-gray-200 text-darkRose2 hover:bg-rose-600 hover:text-white transition-all shadow-sm flex items-center justify-center"
             type="button"
             onClick={() => onIncrease(orderItem.id)}
           >
