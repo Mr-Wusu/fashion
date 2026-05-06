@@ -1,5 +1,6 @@
 "use server";
 
+import { storeSuggestion } from "@/lib/authService";
 import { uploadImage } from "@/lib/cloudinary";
 // import { storeSuggestion } from "@/lib/suggestionsService"; // Example for later
 
@@ -47,11 +48,10 @@ export default async function suggestDesign(
       };
     }
 
-    // 2. Logic to store the suggestion in your DB (e.g., PostgreSQL or MongoDB)
-    // const result = await storeSuggestion({ imageUrl, description });
+    // 2. Logic to store the suggestion in DB
+    const result = await storeSuggestion({ imageUrl, description });
 
-    // Simulating success for now
-    return { errors: {}, success: true };
+    if (result.success === true) return { errors: {}, success: true };
   } catch (error) {
     console.error("Suggestion Error:", error);
     return {
@@ -61,4 +61,5 @@ export default async function suggestDesign(
       success: false,
     };
   }
+  return { errors: {} };
 }

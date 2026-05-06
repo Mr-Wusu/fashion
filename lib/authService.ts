@@ -9,6 +9,7 @@ import {
 import { getPrisma } from "@/lib/db";
 import { Role } from "@/types";
 
+
 export async function registerUser(data: {
   firstname: string;
   surname: string;
@@ -78,7 +79,7 @@ export async function storeCloth(data: {
     const { imageUrl, description, price, altTag } = data;
     // Check if user exists
     const user = await getCurrentuser();
-    if (!user) throw new Error();
+    if (!user) throw new Error("Please sign in to make such request");
     // Check that user behind request has admin rights
     const hasRight = checkUserPermission(user, Role.TEST_ADMIN);
     if (!hasRight) throw new Error("You have no such priviledge!");
@@ -147,6 +148,25 @@ export async function deleteClothDB(id: string) {
     return { success: false, error: "Failed to delete cloth" };
   }
 }
-  
 
-
+export async function storeSuggestion(data: { imageUrl:string; description: string }) {
+  try {
+    const {imageUrl, description} = data;
+    const user = await getCurrentuser();
+    if(!user) throw new Error("Please sign in to suggest a design")
+    const isAdmin = checkUserPermission(user, Role.TEST_ADMIN)
+    if (isAdmin)
+      throw new Error("Why are you here? You have admin rights, use them!");
+    await getPrisma().suggestion.create({
+      data: {
+        userId: user.id,
+        imageUrl,
+        description
+      }
+    })
+    return { success: true, message: "Suggestion sent successfully" };
+  } catch (err) {
+    console.error(`Storing suggestion error: ${err}`);
+    return {success: false, message: "Suggestion request failed"}
+  }
+}

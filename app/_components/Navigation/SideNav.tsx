@@ -57,11 +57,27 @@ export default function SideNav() {
                 <Link href="/contact-us">Contact Us</Link>
               </li>
               {user && user.role === Role.USER && (
+                <>
+                  <li
+                    onClick={toggleSideNav}
+                    className="hover:scale-110 transition-all duration-200 ease-out"
+                  >
+                    <Link href="/measurements">Measurements</Link>
+                  </li>
+                  <li
+                    onClick={toggleSideNav}
+                    className="hover:scale-110 transition-all duration-200 ease-out"
+                  >
+                    <Link href="/cart">Cart</Link>
+                  </li>
+                </>
+              )}
+              {user && user.role !== Role.USER && (
                 <li
                   onClick={toggleSideNav}
                   className="hover:scale-110 transition-all duration-200 ease-out"
                 >
-                  <Link href="/measurements">Measurements</Link>
+                  <Link href="/orders">Orders</Link>
                 </li>
               )}
             </ul>

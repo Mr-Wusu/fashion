@@ -1,16 +1,35 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import toast, { Toast, Toaster } from "react-hot-toast";
 import { PulseLoader } from "react-spinners";
 import { MdClose, MdCloudUpload } from "react-icons/md";
 import { useAuth } from "@/contexts/authProvider";
+import suggestDesign from "@/actions/suggestions-action";
 
 export default function FooterForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const { user } = useAuth();
+
+  // Initialize Action State with suggestDesign server action
+  const [formState, formAction, isPending] = useActionState(suggestDesign, {
+    errors: {},
+  });
+
+  // Effect to handle feedback from server action
+  useEffect(() => {
+    if (formState?.errors?.general) {
+      toast.error(formState.errors.general, {
+        duration: 5000,
+        icon: "❌",
+      });
+    } else if (formState?.success) {
+      toast.success("Design successfully suggested!");
+      formRef.current?.reset();
+      setFileName(null);
+    }
+  }, [formState]);
 
   // Handle file name display for custom UI
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,6 +37,7 @@ export default function FooterForm() {
     setFileName(file ? file.name : null);
   };
 
+  // Custom toast logic for unauthorized users
   function showToastWithCloseButton(message: string) {
     toast.custom((t: Toast) => (
       <div
@@ -42,46 +62,20 @@ export default function FooterForm() {
     ));
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
+  // Wrapper function to check auth before triggering the server action
+  const handleAction = (formData: FormData) => {
     if (!user) {
       showToastWithCloseButton("Sign in to send us a design");
       return;
     }
-
-    setIsSubmitting(true);
-    if (!formRef.current) {
-      toast.error("Select an image file and describe it!");
-      return;
-    }
-
-    const formData = new FormData(formRef.current);
-    const selectedImage = formData.get("image") as File;
-    const description = formData.get("description") as string;
-
-    console.log(selectedImage, description)
-
-    try {
-      // Your existing upload logic here...
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulating upload
-
-      toast.success("Design successfully suggested!");
-      formRef.current?.reset();
-      setFileName(null);
-    } catch (error) {
-      console.error("Error uploading cloth", error);
-      toast.error("Failed to upload your design.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
+    formAction(formData);
+  };
 
   return (
     <form
       className="flex flex-col gap-5 w-full"
       ref={formRef}
-      onSubmit={handleSubmit}
+      action={handleAction}
     >
       <div className="grid grid-cols-1 gap-4">
         {/* Styled File Input */}
@@ -122,12 +116,23 @@ export default function FooterForm() {
         </div>
       </div>
 
+      {/* Field-specific error display */}
+      {formState?.errors && Object.keys(formState.errors).length > 0 && (
+        <ul className="text-rose-500 text-xs">
+          {Object.entries(formState.errors).map(
+            ([field, error]) =>
+              field !== "general" &&
+              error && <li key={field}>{String(error)}</li>,
+          )}
+        </ul>
+      )}
+
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isPending}
         className="w-full bg-rose-600 hover:bg-rose-700 disabled:bg-gray-400 text-white py-3 rounded-xl font-bold shadow-md hover:shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
       >
-        {isSubmitting ? (
+        {isPending ? (
           <>
             <span className="text-sm">Processing Design...</span>
             <PulseLoader color="#ffffff" loading={true} size={6} />

@@ -1,5 +1,4 @@
 import { getPrisma } from "@/lib/db";
-// Import the Enum directly from Prisma to avoid the type mismatch
 import { Order_Status } from "@/generated/prisma/enums";
 import {
   FiPackage,
@@ -44,7 +43,7 @@ export default async function AdminOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -55,7 +54,7 @@ export default async function AdminOrdersPage() {
               Manage and track all incoming requests
             </p>
           </div>
-          <div className="bg-white p-3 rounded-xl shadow-sm border border-rose-100 flex items-center gap-3">
+          <div className="bg-white p-3 rounded-xl shadow-sm border border-rose-100 flex items-center gap-3 w-fit">
             <FiPackage className="text-rose-600" />
             <span className="text-sm font-bold text-darkRose2">
               {orders.length} Total Orders
@@ -63,107 +62,113 @@ export default async function AdminOrdersPage() {
           </div>
         </header>
 
-        <div className="bg-white rounded-2xl shadow-xl shadow-rose-900/5 border border-rose-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead className="bg-gray-50 border-b border-rose-100">
-                <tr>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-                    Customer
-                  </th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-                    Items
-                  </th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-                    Total
-                  </th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 text-right">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-rose-50">
-                {orders.map((order) => {
-                  const { style, icon: StatusIcon } = getStatusInfo(
-                    order.status,
-                  );
+        {/* Desktop Table View - Hidden on Mobile */}
+        <div className="hidden md:block bg-white rounded-2xl shadow-xl shadow-rose-900/5 border border-rose-100 overflow-hidden">
+          <table className="w-full text-left border-collapse">
+            <thead className="bg-gray-50 border-b border-rose-100">
+              <tr>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Customer</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Items</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Total</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Status</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 text-right">Ordered On</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-rose-50">
+              {orders.map((order) => {
+                const { style, icon: StatusIcon } = getStatusInfo(order.status);
+                const total = order.orderItems.reduce((acc, item) => acc + item.priceAtPurchase * item.quantity, 0);
 
-                  return (
-                    <tr
-                      key={order.id}
-                      className="hover:bg-rose-50/30 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="font-bold text-darkRose2">
-                          {order.user.firstname} {order.user.surname}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {order.user.email}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex -space-x-2">
-                          {order.orderItems.slice(0, 3).map((item) => (
-                            <div
-                              key={item.id}
-                              className="relative h-8 w-8 rounded-full border-2 border-white overflow-hidden shadow-sm"
-                            >
-                              <Image
-                                src={item.cloth.imageUrl}
-                                alt="item"
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                          ))}
-                          {order.orderItems.length > 3 && (
-                            <div className="h-8 w-8 rounded-full bg-rose-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-rose-600">
-                              +{order.orderItems.length - 3}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 font-bold text-rose-900">
-                        NGN{" "}
-                        {order.orderItems
-                          .reduce(
-                            (acc, item) =>
-                              acc + item.priceAtPurchase * item.quantity,
-                            0,
-                          )
-                          .toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div
-                          className={`flex items-center gap-2 px-3 py-1 rounded-full border w-fit ${style}`}
-                        >
-                          <StatusIcon className="text-xs" />
-                          <span className="text-[10px] font-black uppercase tracking-tighter">
-                            {order.status}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right text-xs text-gray-500 font-medium">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {orders.length === 0 && (
-            <div className="py-20 text-center">
-              <p className="text-gray-400 font-medium tracking-wide">
-                No customer orders found.
-              </p>
-            </div>
-          )}
+                return (
+                  <tr key={order.id} className="hover:bg-rose-50/30 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="font-bold text-darkRose2">{order.user.firstname} {order.user.surname}</div>
+                      <div className="text-xs text-gray-400">{order.user.email}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex -space-x-2">
+                        {order.orderItems.slice(0, 3).map((item) => (
+                          <div key={item.id} className="relative h-8 w-8 rounded-full border-2 border-white overflow-hidden shadow-sm">
+                            <Image src={item.cloth.imageUrl} alt="item" fill className="object-cover" />
+                          </div>
+                        ))}
+                        {order.orderItems.length > 3 && (
+                          <div className="h-8 w-8 rounded-full bg-rose-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-rose-600">
+                            +{order.orderItems.length - 3}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-bold text-rose-900">NGN {total.toLocaleString()}</td>
+                    <td className="px-6 py-4">
+                      <div className={`flex items-center gap-2 px-3 py-1 rounded-full border w-fit ${style}`}>
+                        <StatusIcon className="text-xs" />
+                        <span className="text-[10px] font-black uppercase tracking-tighter">{order.status}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right text-xs text-gray-500 font-medium">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
+
+        {/* Mobile Card View - Visible only on Small Screens */}
+        <div className="md:hidden space-y-4">
+          {orders.map((order) => {
+            const { style, icon: StatusIcon } = getStatusInfo(order.status);
+            const total = order.orderItems.reduce((acc, item) => acc + item.priceAtPurchase * item.quantity, 0);
+
+            return (
+              <div key={order.id} className="bg-white p-5 rounded-2xl shadow-md border border-rose-100 space-y-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="font-bold text-darkRose2">{order.user.firstname} {order.user.surname}</div>
+                    <div className="text-xs text-gray-400">{order.user.email}</div>
+                  </div>
+                  <div className="text-[10px] text-gray-400 font-bold uppercase">
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex -space-x-2">
+                    {order.orderItems.slice(0, 4).map((item) => (
+                      <div key={item.id} className="relative h-10 w-10 rounded-full border-2 border-white overflow-hidden shadow-sm">
+                        <Image src={item.cloth.imageUrl} alt="item" fill className="object-cover" />
+                      </div>
+                    ))}
+                    {order.orderItems.length > 4 && (
+                      <div className="h-10 w-10 rounded-full bg-rose-100 border-2 border-white flex items-center justify-center text-xs font-bold text-rose-600">
+                        +{order.orderItems.length - 4}
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] text-gray-400 uppercase font-bold">Total Amount</p>
+                    <p className="font-black text-rose-900">NGN {total.toLocaleString()}</p>
+                  </div>
+                </div>
+
+                <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border w-full justify-center ${style}`}>
+                  <StatusIcon />
+                  <span className="text-xs font-black uppercase tracking-widest">{order.status}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {orders.length === 0 && (
+          <div className="py-20 text-center bg-white rounded-2xl border border-rose-100 shadow-sm">
+            <p className="text-gray-400 font-medium tracking-wide">
+              No customer orders found.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

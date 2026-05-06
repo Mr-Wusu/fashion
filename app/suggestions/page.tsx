@@ -24,7 +24,7 @@ export default async function AdminSuggestionsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8 flex items-center justify-center">
       <div className="max-w-6xl mx-auto space-y-6">
         {suggestions.length === 0 && (
           <div className="text-center py-20 bg-white rounded-2xl border-2 border-dashed border-rose-100">
