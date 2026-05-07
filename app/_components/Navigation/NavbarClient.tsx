@@ -74,7 +74,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`md:hidden justify-between min-h-16 items-center p-3 fixed w-full z-50 flex shadow-sm shadow-black/30 ${isHomePage && !isScrolled ? "text-lightRose2 hover:" : !isHomePage && !isScrolled ? "bg-rose-50 text-darkRose2" : "bg-rose-50 text-darkRose2"} `}
+        className={`md:hidden justify-between min-h-16 items-center p-3 fixed w-full z-50 flex shadow-sm shadow-black/30 ${isHomePage && !isScrolled ? "text-lightRose2" : !isHomePage && !isScrolled ? "bg-rose-50 text-darkRose2" : "bg-rose-50 text-darkRose2"} `}
       >
         <SideNav />
         <h2 className="h2-custom-font text-[1.2rem]">Blews&apos; Stitches</h2>
@@ -90,7 +90,8 @@ export default function Navbar() {
                 </span>
               )}
               <span className="font-semibold text-sm leading-none">
-                {user.firstname.charAt(0)}{user.surname?.charAt(0)}
+                {user.firstname.charAt(0)}
+                {user.surname?.charAt(0)}
               </span>
             </div>
             {userOpen && <User setUserOpen={setUserOpen} user={user} />}
@@ -105,7 +106,7 @@ export default function Navbar() {
         )}
       </nav>
       <nav
-        className={`hidden md:flex h-16 px-4 fixed w-full z-50 shadow-md items-center justify-between ${isHomePage && !isScrolled ? "text-lightRose2 hover:" : !isHomePage && !isScrolled ? "bg-rose-50 text-darkRose2" : "bg-rose-50 text-darkRose2"} `}
+        className={`hidden md:flex h-16 px-4 fixed w-full z-50 shadow-md items-center justify-between ${isHomePage && !isScrolled ? "text-lightRose2" : !isHomePage && !isScrolled ? "bg-rose-50 text-darkRose2" : "bg-rose-50 text-darkRose2"} `}
       >
         <h2 className={`h2-custom-font md:text-xl lg:text-2xl `}>
           Blews&apos; Stitches

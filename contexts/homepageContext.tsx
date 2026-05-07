@@ -10,13 +10,14 @@ interface HomePageContextType {
 
 const HomePageContext = createContext<HomePageContextType | null>(null);
 
-export function HomePageProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function HomePageProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.scrollY >= 650;
+    }
+    return false;
+  });
   const isHomePage = ["/", "/auth/sign-in", "/auth/sign-up"].includes(pathname);
 
   useEffect(() => {
