@@ -43,10 +43,10 @@ export default async function AdminOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-12">
+          <div  >
             <h1 className="text-2xl font-black text-darkRose2 uppercase tracking-tight">
               Customer Orders
             </h1>

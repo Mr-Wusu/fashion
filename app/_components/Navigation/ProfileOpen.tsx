@@ -170,7 +170,7 @@ export default function ProfileOpen({
                 <GiThink className="text-rose-900 ml-[0.155rem]" />
                 <Link
                   className={`${nameFont} text-[0.89rem]`}
-                  href="/customer-suggestions"
+                  href="/suggestions"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsProfileOpen(false);
